@@ -23,7 +23,6 @@ class Item(BaseModel):
 def Times():
     while True:
         time.sleep(10)
-        print("쓰레딩....")
         Find_All_Order()
 
 @app.post('/wait-time')
@@ -42,7 +41,6 @@ def Depo(item : Item):
     pattern = re.compile("입금\S+원")
     tet = pattern.search(item.message).group()
     money = tet.replace("입금","").replace("원","").replace(",","")
-    print(item.message)
     Find_Depo(str_datetime, int(money))
     return item
 

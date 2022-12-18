@@ -43,7 +43,6 @@ def Find_All_Order():
                 datetime_result = datetime.strptime(i['Order_Time'], form)
                 dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
                 datess = datetime_utc2 - dt_timezone
-                print(datess)
                 if int(datess.seconds / 60) >= 30:
                     Order_Code = i["Order_Code"]
                     Update_deposit(Order_Code, False)
@@ -55,7 +54,6 @@ def Find_All_Order():
                 datetime_result = datetime.strptime(i['Order_Time'], form)
                 dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
                 datess = datetime_utc2 - dt_timezone
-                print(datess)
                 if int(datess.seconds / 60) >= 30:
                     Order_Code = i["Order_Code"]
                     Update_deposit(Order_Code, False)
@@ -67,7 +65,6 @@ def Find_All_Order():
                 datetime_result = datetime.strptime(i['Order_Time'], form)
                 dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
                 datess = datetime_utc2 - dt_timezone
-                print(datess)
                 if int(datess.seconds / 60) >= 30:
                     Order_Code = i["Order_Code"]
                     Update_deposit(Order_Code, False)
@@ -107,8 +104,6 @@ def find_money(date,money):
     timezone_kst = timezone(timedelta(hours=9))
     datetime_utc2 = datetime.now(timezone_kst)
     format = '%Y-%m-%d %H:%M:%S'
-    print(date)
-    print(money)
 
     x = mycol.find({"Order_Time": {"$regex": date}}).sort("_id", -1)
     for i in x:
@@ -122,7 +117,6 @@ def find_money(date,money):
                     datetime_result = datetime.strptime(i['Order_Time'], format)
                     dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
                     datess = datetime_utc2 - dt_timezone
-                    print(datess)
                     if int(datess.seconds / 60) <= 15 and datess.days >= 0:
                         Order_Code = i["Order_Code"]
                         Update_deposit(Order_Code, True)
@@ -134,7 +128,6 @@ def find_money(date,money):
                     datetime_result = datetime.strptime(i['Order_Time'], format)
                     dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
                     datess = datetime_utc2 - dt_timezone
-                    print(datess)
                     if int(datess.seconds / 60) <= 15 and datess.days >= 0:
                         Order_Code = i["Order_Code"]
                         Update_deposit(Order_Code, True)
@@ -146,7 +139,6 @@ def find_money(date,money):
                     datetime_result = datetime.strptime(i['Order_Time'], format)
                     dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
                     datess = datetime_utc2 - dt_timezone
-                    print(datess)
                     if int(datess.seconds / 60) <= 15 and datess.days >= 0:
                         Order_Code = i["Order_Code"]
                         Update_deposit(Order_Code, True)
