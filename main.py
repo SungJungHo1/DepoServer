@@ -22,7 +22,7 @@ class Item(BaseModel):
 
 def Times():
     while True:
-        time.sleep(10)
+        time.sleep(30)
         Find_All_Order()
 
 @app.post('/wait-time')
