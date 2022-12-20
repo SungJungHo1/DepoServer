@@ -25,8 +25,8 @@ Depo = mydb['Depo']
 def Insert_WaitTime(Time,message):
     WaitTime.insert_one({"Time":Time,"message":message})
 
-def Insert_Depo(UserId,UserName,Time,Money,Order_Code):
-    Depo.insert_one({"UserId":UserId,'UserName':UserName,'Money':Money,"Order_Code":Order_Code,"Time":Time})
+def Insert_Depo(UserId,UserName,Time,Money,Order_Code,Finded):
+    Depo.insert_one({"UserId":UserId,'UserName':UserName,'Money':Money,"Order_Code":Order_Code,"Finded":Finded,"Time":Time})
 
 def Find_All_Order():
     datas = []
@@ -126,7 +126,7 @@ def find_money(date,money):
                         Order_Code = i["Order_Code"]
                         Update_deposit(Order_Code, True)
                         Update_Cancel(Order_Code, False)
-                        Insert_Depo(UserId=i["UserId"],UserName=i["UserName"],Time=str_datetime,Money=money,Order_Code=i["Order_Code"])
+                        Insert_Depo(UserId=i["UserId"],UserName=i["UserName"],Time=str_datetime,Money=money,Order_Code=i["Order_Code"],Finded=True)
                         return
         else:
             if "deposit" not in i:
@@ -138,7 +138,7 @@ def find_money(date,money):
                         Order_Code = i["Order_Code"]
                         Update_deposit(Order_Code, True)
                         Update_Cancel(Order_Code, False)
-                        Insert_Depo(UserId=i["UserId"],UserName=i["UserName"],Time=str_datetime,Money=money,Order_Code=i["Order_Code"])
+                        Insert_Depo(UserId=i["UserId"],UserName=i["UserName"],Time=str_datetime,Money=money,Order_Code=i["Order_Code"],Finded=True)
                         return
 
             elif not i["deposit"] :
@@ -150,8 +150,10 @@ def find_money(date,money):
                         Order_Code = i["Order_Code"]
                         Update_deposit(Order_Code, True)
                         Update_Cancel(Order_Code, False)
-                        Insert_Depo(UserId=i["UserId"],UserName=i["UserName"],Time=str_datetime,Money=money,Order_Code=i["Order_Code"])
+                        Insert_Depo(UserId=i["UserId"],UserName=i["UserName"],Time=str_datetime,Money=money,Order_Code=i["Order_Code"],Finded=True)
                         return
+    str_datetime = datetime.strftime(datetime_utc2, format)
+    Insert_Depo(UserId="확인안됨",UserName="확인안됨",Time=str_datetime,Money=money,Order_Code="확인안됨",Finded=False)
 
 def find_cust(UserId):
 
@@ -253,6 +255,9 @@ def push_Message(UserId,text):
         response = requests.post(url, headers=header, data=json.dumps(datas))
 
 if __name__ == "__main__":
+    ww = Depo.find({})
+    for i in ww:
+        print(i)
     # Add_cus_AddrData(5485851021533487,{'주소이름':'광주집','주소1':'월곡동','주소2':'빌라','좌표1':35.1673079492069,'좌표2':126.80982365415,})
     # www = WaitTime.find_one({"Time":'2022.12.15 21:25:33'})
     # www = WaitTime.find()
