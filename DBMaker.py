@@ -20,9 +20,13 @@ myAccount = mydb['Account']
 errcol = mydb['Errors']
 service = mydb['service']
 WaitTime = mydb['WaitTime']
+Depo = mydb['Depo']
 
 def Insert_WaitTime(Time,message):
     WaitTime.insert_one({"Time":Time,"message":message})
+
+def Insert_Depo(UserId,UserName,Time,Money,Order_Code):
+    Depo.insert_one({"UserId":UserId,'UserName':UserName,'Money':Money,"Order_Code":Order_Code,"Time":Time})
 
 def Find_All_Order():
     datas = []
@@ -30,9 +34,9 @@ def Find_All_Order():
     datetime_utc2 = datetime.now(timezone_kst)
 
     format = '%Y-%m-%d'
-    str_datetime = datetime.strftime(datetime_utc2, format)
+    str_datetime2 = datetime.strftime(datetime_utc2, format)
 
-    x = mycol.find({"Order_Time": {"$regex": str_datetime}}).sort("_id", -1)
+    x = mycol.find({"Order_Time": {"$regex": str_datetime2}}).sort("_id", -1)
     for i in x:
         form = '%Y-%m-%d %H:%M:%S'
         str_datetime = datetime.strftime(datetime_utc2, form)
@@ -111,6 +115,7 @@ def find_money(date,money):
         for v in i["Cart"]:
             totalPrice = totalPrice + v['totalPrice']
         T_Money = totalPrice + int(i['delivery_fee']) + int(i['Service_Money'])
+        str_datetime = datetime.strftime(datetime_utc2, format)
         if "Cancel" not in i:
             if "deposit" not in i:
                 if int(T_Money) == int(money):
@@ -121,7 +126,8 @@ def find_money(date,money):
                         Order_Code = i["Order_Code"]
                         Update_deposit(Order_Code, True)
                         Update_Cancel(Order_Code, False)
-                        break
+                        Insert_Depo(UserId=i["UserId"],UserName=i["UserName"],Time=str_datetime,Money=money,Order_Code=i["Order_Code"])
+                        return
         else:
             if "deposit" not in i:
                 if int(T_Money) == int(money):
@@ -132,7 +138,8 @@ def find_money(date,money):
                         Order_Code = i["Order_Code"]
                         Update_deposit(Order_Code, True)
                         Update_Cancel(Order_Code, False)
-                        break
+                        Insert_Depo(UserId=i["UserId"],UserName=i["UserName"],Time=str_datetime,Money=money,Order_Code=i["Order_Code"])
+                        return
 
             elif not i["deposit"] :
                 if int(T_Money) == int(money):
@@ -143,7 +150,8 @@ def find_money(date,money):
                         Order_Code = i["Order_Code"]
                         Update_deposit(Order_Code, True)
                         Update_Cancel(Order_Code, False)
-                        break
+                        Insert_Depo(UserId=i["UserId"],UserName=i["UserName"],Time=str_datetime,Money=money,Order_Code=i["Order_Code"])
+                        return
 
 def find_cust(UserId):
 
