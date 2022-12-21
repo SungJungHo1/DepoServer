@@ -129,29 +129,30 @@ def find_money(date,money):
                         Insert_Depo(UserId=i["UserId"],UserName=i["UserName"],Time=str_datetime,Money=money,Order_Code=i["Order_Code"],Finded=True)
                         return
         else:
-            if "deposit" not in i:
-                if int(T_Money) == int(money):
-                    datetime_result = datetime.strptime(i['Order_Time'], format)
-                    dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
-                    datess = datetime_utc2 - dt_timezone
-                    if int(datess.seconds / 60) <= 30 and datess.days >= 0:
-                        Order_Code = i["Order_Code"]
-                        Update_deposit(Order_Code, True)
-                        Update_Cancel(Order_Code, False)
-                        Insert_Depo(UserId=i["UserId"],UserName=i["UserName"],Time=str_datetime,Money=money,Order_Code=i["Order_Code"],Finded=True)
-                        return
+            if not i["Cancel"]:
+                if "deposit" not in i:
+                    if int(T_Money) == int(money):
+                        datetime_result = datetime.strptime(i['Order_Time'], format)
+                        dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
+                        datess = datetime_utc2 - dt_timezone
+                        if int(datess.seconds / 60) <= 30 and datess.days >= 0:
+                            Order_Code = i["Order_Code"]
+                            Update_deposit(Order_Code, True)
+                            Update_Cancel(Order_Code, False)
+                            Insert_Depo(UserId=i["UserId"],UserName=i["UserName"],Time=str_datetime,Money=money,Order_Code=i["Order_Code"],Finded=True)
+                            return
 
-            elif not i["deposit"] :
-                if int(T_Money) == int(money):
-                    datetime_result = datetime.strptime(i['Order_Time'], format)
-                    dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
-                    datess = datetime_utc2 - dt_timezone
-                    if int(datess.seconds / 60) <= 30 and datess.days >= 0:
-                        Order_Code = i["Order_Code"]
-                        Update_deposit(Order_Code, True)
-                        Update_Cancel(Order_Code, False)
-                        Insert_Depo(UserId=i["UserId"],UserName=i["UserName"],Time=str_datetime,Money=money,Order_Code=i["Order_Code"],Finded=True)
-                        return
+                elif not i["deposit"] :
+                    if int(T_Money) == int(money):
+                        datetime_result = datetime.strptime(i['Order_Time'], format)
+                        dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
+                        datess = datetime_utc2 - dt_timezone
+                        if int(datess.seconds / 60) <= 30 and datess.days >= 0:
+                            Order_Code = i["Order_Code"]
+                            Update_deposit(Order_Code, True)
+                            Update_Cancel(Order_Code, False)
+                            Insert_Depo(UserId=i["UserId"],UserName=i["UserName"],Time=str_datetime,Money=money,Order_Code=i["Order_Code"],Finded=True)
+                            return
     str_datetime = datetime.strftime(datetime_utc2, format)
     Insert_Depo(UserId="확인안됨",UserName="확인안됨",Time=str_datetime,Money=money,Order_Code="확인안됨",Finded=False)
 
