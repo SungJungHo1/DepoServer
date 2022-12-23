@@ -116,9 +116,12 @@ def find_money(date,money):
             totalPrice = totalPrice + v['totalPrice']
         T_Money = totalPrice + int(i['delivery_fee']) + int(i['Service_Money'])
         str_datetime = datetime.strftime(datetime_utc2, format)
+        Point = 0
+        if "use_point" in i:
+            Point = i["use_point"]
         if "Cancel" not in i:
             if "deposit" not in i:
-                if int(T_Money) == int(money):
+                if int(int(T_Money) - int(Point)) == int(money):
                     datetime_result = datetime.strptime(i['Order_Time'], format)
                     dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
                     datess = datetime_utc2 - dt_timezone
@@ -131,7 +134,7 @@ def find_money(date,money):
         else:
             if not i["Cancel"]:
                 if "deposit" not in i:
-                    if int(T_Money) == int(money):
+                    if int(int(T_Money) - int(Point)) == int(money):
                         datetime_result = datetime.strptime(i['Order_Time'], format)
                         dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
                         datess = datetime_utc2 - dt_timezone
@@ -143,7 +146,7 @@ def find_money(date,money):
                             return
 
                 elif not i["deposit"] :
-                    if int(T_Money) == int(money):
+                    if int(int(T_Money) - int(Point)) == int(money):
                         datetime_result = datetime.strptime(i['Order_Time'], format)
                         dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
                         datess = datetime_utc2 - dt_timezone
