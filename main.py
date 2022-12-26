@@ -38,13 +38,23 @@ def Depo(item : Item):
     format = '%Y-%m-%d'
     str_datetime = datetime.strftime(datetime_utc2, format)
 
-    pattern = re.compile("입금\S+원")
-    tet = pattern.search(item.message).group()
-    money = tet.replace("입금","").replace("원","").replace(",","")
-    Find_Depo(str_datetime, int(money))
+    pattern = re.compile("입금\S+")
+    if "네이버" not in item.message:
+        tet = pattern.search(item.message.replace("원","")).group()
+        money = tet.replace("입금","").replace(",","")
+        Find_Depo(str_datetime, int(money))
     return item
 
 @app.get('/Thread_Start')
 def find_User_Data2(background_tasks: BackgroundTasks = None):
     background_tasks.add_task(Times)
     return "result"
+
+if __name__ == "__main__":
+    text = f"126232321313\n입금100,000원\nsdsdsadasda"
+    if "네이버페이" in text:
+        print("네이버페이")
+    pattern = re.compile("입금\S+")
+    tet = pattern.search(text.replace("원","")).group()
+    money = tet.replace("입금","").replace(",","")
+    print(money)
