@@ -93,6 +93,16 @@ def Find_All_Order():
                                 push_Message(i['UserId'],'คุณลูกค้าคะได้รับอาหารหรือเครื่องดื่มยังคะหากได้รับแล้ว กรุณาถ่ายรูปส่งให้แอดมินหลังจากได้รับอาหารแล้วนะคะ🙏')
     return datas
 
+def push_Message2(datas):
+        Line_tokens = f"Bearer Tk7BbAc9682XQuHWap8MIwUjKOqXV+aQ1a4XJWaSOnIBpbG1AT5dRtRnSTyeIjCJBdNolK8sDhEF5xbxK9ygvU0h8TiC1tgKHlGHGMSNoNB1lOBTkWs1aRqt54k26x1UEvig5LdK0iN+CClOO29z0AdB04t89/1O/w1cDnyilFU="
+        header = {
+            "Authorization": Line_tokens,
+            "Content-Type": "application/json"
+        }
+        url = f"https://api.line.me/v2/bot/message/push"
+        
+        response = requests.post(url, headers=header, data=json.dumps(datas))
+
 def Update_deposit(Order_Code, deposit):
     myquery = {"Order_Code": str(Order_Code)}
     newvalues = {"$set": {"deposit": deposit}}
@@ -128,8 +138,9 @@ def find_WTime(date,time,MarketName):
                 if 'Cancel' in i:
                     if not i["Cancel"]:
                         if i["deposit"] :
-                            Wait_Time_Data(i['UserId'],i['UserName'],time,Market_Name)
+                            dd = Wait_Time_Data(i['UserId'],i['UserName'],time,Market_Name)
                             Update_WTDb(i['Order_Code'],int(time))
+                            push_Message2(dd)
                             return
   
 
