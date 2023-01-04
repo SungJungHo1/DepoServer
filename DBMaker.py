@@ -176,7 +176,7 @@ def find_Cansel(date,MarketName):
                                     totalPrice = totalPrice + int(v['totalPrice'])
                                 Back_Point = totalPrice + int(i['delivery_fee']) + int(i['Service_Money'])
                                 dd = Shop_Link(UserId,Back_Point,Market_Name)
-                                
+                                Update_Db(Order_Code, True, False,False)
                                 Edit_Point(UserId, Back_Point)
                                 Update_deposit(Order_Code, False)
                                 Update_Cancel(Order_Code, True)
