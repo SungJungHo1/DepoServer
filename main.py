@@ -31,7 +31,7 @@ def Waittime(item : Item):
     datetime_utc2 = datetime.now(timezone_kst)
     format = '%Y-%m-%d'
     str_datetime = datetime.strftime(datetime_utc2, format)
-
+    Insert_WaitTime(item.date,item.message)
     if "주문 접수 안내" in item.message:
         pattern = re.compile("정상 접수되어, \d+")
         tet = pattern.search(text).group()
