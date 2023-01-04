@@ -56,6 +56,15 @@ def Waittime(item : Item):
 
         # print(MarketName)
         find_WTime(date = str_datetime,time = int(xx),MarketName = MarketName)
+    
+    if "취소" in item.message:
+
+        pattern2 = re.compile("매장명 : \S+")
+        tet2 = pattern2.search(item.message).group()
+        MarketName = tet2.replace('매장명 : ',"")
+
+        # print(MarketName)
+        find_Cansel(date = str_datetime ,MarketName = MarketName)
 
     return item
 

@@ -4,7 +4,7 @@ from datetime import *
 from random import *
 from datetime import datetime, timedelta, timezone
 import shortuuid
-from Make_Datas import Wait_Time_Data
+from Make_Datas import Wait_Time_Data,Shop_Link
 import re
 
 import requests
@@ -52,6 +52,7 @@ def Find_All_Order():
                     Order_Code = i["Order_Code"]
                     Update_deposit(Order_Code, False)
                     Update_Cancel(Order_Code, True)
+                    Edit_Point(i['UserId'], i['use_point'])
                     push_Message(i['UserId'],'ขออภัยค่ะคุณลูกค้าหลังจาก 30 นาทีของการสั่งอาหาร รายการจะถูกยกเลิกอัตโนมัติเพราะลูกค้าโอนเงินล่าช้า กรุณาเลือกสั่งรายการอาหารใหม่อีกครั้งค่ะ🙏')
                     
         elif not i["Cancel"]:
@@ -63,6 +64,7 @@ def Find_All_Order():
                     Order_Code = i["Order_Code"]
                     Update_deposit(Order_Code, False)
                     Update_Cancel(Order_Code, True)
+                    Edit_Point(i['UserId'], i['use_point'])
                     push_Message(i['UserId'],'ขออภัยค่ะคุณลูกค้าหลังจาก 30 นาทีของการสั่งอาหาร รายการจะถูกยกเลิกอัตโนมัติเพราะลูกค้าโอนเงินล่าช้า กรุณาเลือกสั่งรายการอาหารใหม่อีกครั้งค่ะ🙏')
                     
 
@@ -74,6 +76,7 @@ def Find_All_Order():
                     Order_Code = i["Order_Code"]
                     Update_deposit(Order_Code, False)
                     Update_Cancel(Order_Code, True)
+                    Edit_Point(i['UserId'], i['use_point'])
                     push_Message(i['UserId'],'ขออภัยค่ะคุณลูกค้าหลังจาก 30 นาทีของการสั่งอาหาร รายการจะถูกยกเลิกอัตโนมัติเพราะลูกค้าโอนเงินล่าช้า กรุณาเลือกสั่งรายการอาหารใหม่อีกครั้งค่ะ🙏')
                     
 
@@ -140,6 +143,34 @@ def find_WTime(date,time,MarketName):
                         if i["deposit"] :
                             dd = Wait_Time_Data(i['UserId'],i['UserName'],time,Market_Name)
                             Update_WTDb(i['Order_Code'],int(time))
+                            push_Message2(dd)
+                            return
+
+def Edit_Point(UserId, point):
+    mycustomer.update_one({"UserId": str(UserId)}, {
+        '$inc': {'Point': int(point)}})
+
+def find_Cansel(date,MarketName):
+    x = mycol.find({"Order_Time": {"$regex": date}}).sort("_id", -1)
+    for i in x:
+        if "Cart" in  i:
+            Market_Name = i["Cart"][0]['storeName']
+            if Market_Name == MarketName:
+                
+                if 'Cancel' in i:
+                    if not i["Cancel"]:
+                        if i["deposit"] :
+                            Order_Code = i["Order_Code"]
+                            UserId = i['UserId']
+                            totalPrice = 0
+                            for v in i["Cart"]:
+                                totalPrice = totalPrice + int(v['totalPrice'])
+                            Back_Point = totalPrice + int(i['delivery_fee']) + int(i['Service_Money'])
+                            dd = Shop_Link(UserId,Back_Point,Market_Name)
+                            
+                            Edit_Point(UserId, Back_Point)
+                            Update_deposit(Order_Code, False)
+                            Update_Cancel(Order_Code, True)
                             push_Message2(dd)
                             return
   

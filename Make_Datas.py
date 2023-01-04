@@ -130,5 +130,132 @@ def Wait_Time_Data(userId,UserName,Time,Market_Name):
 
     return datas
 
+def Shop_Link(userId,point,Market_Name):
+
+    datas = {
+            "to": userId,
+            "messages": [
+                {
+                    "type": "flex",
+                    "altText": "ข้อมูลการยกเลิก!",
+                    "contents": {
+                        "type": "carousel",
+                        "contents": [
+                            {
+                                "type": "bubble",
+                                "header": {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "ข้อมูลการยกเลิก",
+                                        "size": "xxl",
+                                        "wrap": True,
+                                        "gravity": "center",
+                                        "align": "center",
+                                        "style": "normal",
+                                        "weight": "bold",
+                                        "decoration": "none",
+                                        "color": "#CC0000"
+                                    },
+                                    {
+                                        "type": "separator"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": 'ชื่อร้านที่ยกเลิก',
+                                        "wrap": True,
+                                        "gravity": "center",
+                                        "align": "center",
+                                        "size": "xxl",
+                                        "style": "normal",
+                                        "weight": "bold",
+                                        "decoration": "none",
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": f"{Market_Name}",
+                                        "wrap": True,
+                                        "gravity": "center",
+                                        "align": "center",
+                                        "style": "normal",
+                                        "weight": "bold",
+                                        "decoration": "none",
+                                    },
+                                    ]
+                                },
+                                "body": {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "คำสั่งซื้อของคุณร้านอาหารได้ยกเลิก\nแล้วค่ะ",
+                                        "wrap": True,
+                                        "align": "center"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "ขออภัยในความไม่สะดวกนะคะ หากทำให้ลูกค้าผิดหวังในการรอทานอาหาร",
+                                        "wrap": True,
+                                        "align": "center"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "จำนวนเงินที่ลูกค้ามีอยู่จะถูกเปลี่ยนเป็น",
+                                        "wrap": True,
+                                        "align": "center"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": f"พ้อยท์ {point}",
+                                        "wrap": True,
+                                        "align": "center",
+                                        "size": "xl",
+                                        "color": "#1DB446",
+                                        "weight": "bold"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "ลูกค้าสามารถสั่งอาหารตอนไหนก็ได้ค่ะ",
+                                        "wrap": True,
+                                        "align": "center"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "เมื่อลูกค้าสั่งอาหารระบบจะหักจากพ้อยท์อัตโนมัตินะคะ หรือลูกค้าต้องการคืนเงินก็ได้ค่ะ",
+                                        "wrap": True,
+                                        "align": "center"
+                                    }
+                                    ]
+                                },
+                                "footer": {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "contents": [
+                                    {
+                                        "type": "button",
+                                        "style": "primary",
+                                        "color": "#B266FF",
+                                        "margin": "xxl",
+                                        "action": {
+                                        "type": "uri",
+                                        "label": "หาร้านอาหารอื่นๆ",
+                                        "uri": "https://liff.line.me/1657404178-vbEl737y",
+                                        }
+                                    }
+                                    ]
+                                }
+                                }
+                        ]
+                    }
+
+                }
+            ]
+        }
+
+    return datas
+
 if __name__ == "__main__":
     print("sd")
