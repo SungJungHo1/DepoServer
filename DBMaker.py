@@ -146,14 +146,14 @@ def find_WTime(date,time,MarketName):
         if "Cart" in  i:
             Market_Name = i["Cart"][0]['storeName']
             if Market_Name == MarketName:
-                
-                if 'Cancel' in i:
-                    if not i["Cancel"]:
-                        if i["deposit"] :
-                            dd = Wait_Time_Data(i['UserId'],i['UserName'],time,Market_Name)
-                            Update_WTDb(i['Order_Code'],int(time))
-                            push_Message2(dd)
-                            return
+                if not i["Order_End"] and not i["Del_End"]:
+                    if 'Cancel' in i:
+                        if not i["Cancel"]:
+                            if i["deposit"] :
+                                dd = Wait_Time_Data(i['UserId'],i['UserName'],time,Market_Name)
+                                Update_WTDb(i['Order_Code'],int(time))
+                                push_Message2(dd)
+                                return
 
 def Edit_Point(UserId, point):
     mycustomer.update_one({"UserId": str(UserId)}, {
@@ -165,23 +165,23 @@ def find_Cansel(date,MarketName):
         if "Cart" in  i:
             Market_Name = i["Cart"][0]['storeName']
             if Market_Name == MarketName:
-                
-                if 'Cancel' in i:
-                    if not i["Cancel"]:
-                        if i["deposit"] :
-                            Order_Code = i["Order_Code"]
-                            UserId = i['UserId']
-                            totalPrice = 0
-                            for v in i["Cart"]:
-                                totalPrice = totalPrice + int(v['totalPrice'])
-                            Back_Point = totalPrice + int(i['delivery_fee']) + int(i['Service_Money'])
-                            dd = Shop_Link(UserId,Back_Point,Market_Name)
-                            
-                            Edit_Point(UserId, Back_Point)
-                            Update_deposit(Order_Code, False)
-                            Update_Cancel(Order_Code, True)
-                            push_Message2(dd)
-                            return
+                if not i["Order_End"] and not i["Del_End"]:
+                    if 'Cancel' in i:
+                        if not i["Cancel"]:
+                            if i["deposit"] :
+                                Order_Code = i["Order_Code"]
+                                UserId = i['UserId']
+                                totalPrice = 0
+                                for v in i["Cart"]:
+                                    totalPrice = totalPrice + int(v['totalPrice'])
+                                Back_Point = totalPrice + int(i['delivery_fee']) + int(i['Service_Money'])
+                                dd = Shop_Link(UserId,Back_Point,Market_Name)
+                                
+                                Edit_Point(UserId, Back_Point)
+                                Update_deposit(Order_Code, False)
+                                Update_Cancel(Order_Code, True)
+                                push_Message2(dd)
+                                return
   
 
 def find_money(date,money):
