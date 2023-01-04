@@ -4,6 +4,7 @@ from datetime import *
 from random import *
 from datetime import datetime, timedelta, timezone
 import shortuuid
+from Make_Datas import Wait_Time_Data
 import re
 
 import requests
@@ -103,6 +104,34 @@ def Update_Cancel(Order_Code, Cancel):
     newvalues = {"$set": {"Cancel": Cancel}}
 
     mycol.update_one(myquery, newvalues)
+
+def Update_WTDb(Order_Code,Wait_Time):
+
+    timezone_kst = timezone(timedelta(hours=9))
+    datetime_utc2 = datetime.now(timezone_kst)
+
+    format = '%Y-%m-%d %H:%M:%S'
+    str_datetime = datetime.strftime(datetime_utc2, format)
+
+    myquery = {"Order_Code": str(Order_Code)}
+    
+    newvalues = {"$set": {"Order_End": False, "Del_End": False,"Wait_Time":Wait_Time,"Order_End_Time":str_datetime}}
+    mycol.update_one(myquery, newvalues)
+
+def find_WTime(date,time,MarketName):
+    x = mycol.find({"Order_Time": {"$regex": date}}).sort("_id", -1)
+    for i in x:
+        if "Cart" in  i:
+            Market_Name = i["Cart"][0]['storeName']
+            if Market_Name == MarketName:
+                
+                if 'Cancel' in i:
+                    if not i["Cancel"]:
+                        if i["deposit"] :
+                            Wait_Time_Data(i['UserId'],i['UserName'],time,Market_Name)
+                            Update_WTDb(i['Order_Code'],int(time))
+                            return
+  
 
 def find_money(date,money):
     timezone_kst = timezone(timedelta(hours=9))
@@ -259,9 +288,15 @@ def push_Message(UserId,text):
         response = requests.post(url, headers=header, data=json.dumps(datas))
 
 if __name__ == "__main__":
-    ww = Depo.find({})
-    for i in ww:
+    # ww = Depo.find({})
+    # for i in ww:
+    #     print(i)
+
+    x = WaitTime.find({})
+    for i in x:
         print(i)
+
+    # find_WTime('2023-01-02',0)
     # Add_cus_AddrData(5485851021533487,{'주소이름':'광주집','주소1':'월곡동','주소2':'빌라','좌표1':35.1673079492069,'좌표2':126.80982365415,})
     # www = WaitTime.find_one({"Time":'2022.12.15 21:25:33'})
     # www = WaitTime.find()
@@ -292,7 +327,7 @@ if __name__ == "__main__":
 
 
     # find_money('2022-12-17',17000)
-    Find_All_Order()
+    # Find_All_Order()
     # print(www["message"])
     # tet = pattern.search(www["message"]).group()
     # print(tet.replace("- 매장명 : ",""))
