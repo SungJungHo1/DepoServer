@@ -157,8 +157,8 @@ def find_WTime(date,time,MarketName):
                     if 'Cancel' in i:
                         if not i["Cancel"]:
                             if i["deposit"] :
-                                dd = Wait_Time_Data(i['UserId'],i['UserName'],time,Market_Name)
-                                Update_WTDb(i['Order_Code'],int(time))
+                                dd = Wait_Time_Data(i['UserId'],i['UserName'],int(time) + 10,Market_Name)
+                                Update_WTDb(i['Order_Code'],int(time) + 10)
                                 push_Message2(dd)
                                 return
 
