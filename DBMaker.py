@@ -4,7 +4,7 @@ from datetime import *
 from random import *
 from datetime import datetime, timedelta, timezone
 import shortuuid
-from Make_Datas import Wait_Time_Data,Shop_Link
+from Make_Datas import Wait_Time_Data,Shop_Link,Make_Base
 import re
 
 import requests
@@ -20,6 +20,7 @@ mycustomer = mydb['Customer']
 myAccount = mydb['Account']
 errcol = mydb['Errors']
 service = mydb['service']
+
 WaitTime = mydb['WaitTime']
 Depo = mydb['Depo']
 
@@ -54,9 +55,11 @@ def Find_All_Order():
                     Update_Cancel(Order_Code, True)
                     if int(i['use_point']) > 0:
                         Edit_Point(i['UserId'], i['use_point'])
-                        push_Message(i['UserId'],f'Point Back{i["use_point"]}\nขออภัยค่ะคุณลูกค้าหลังจาก 30 นาทีของการสั่งอาหาร รายการจะถูกยกเลิกอัตโนมัติเพราะลูกค้าโอนเงินล่าช้า กรุณาเลือกสั่งรายการอาหารใหม่อีกครั้งค่ะ🙏')
+                        ments = Make_Base(i['UserId'], i['use_point'])
+                        push_Message2(ments)
                     else:
-                        push_Message(i['UserId'],'ขออภัยค่ะคุณลูกค้าหลังจาก 30 นาทีของการสั่งอาหาร รายการจะถูกยกเลิกอัตโนมัติเพราะลูกค้าโอนเงินล่าช้า กรุณาเลือกสั่งรายการอาหารใหม่อีกครั้งค่ะ🙏')
+                        ments = Make_Base(i['UserId'], 0)
+                        push_Message2(ments)
                     
         elif not i["Cancel"]:
             if "deposit" not in i:
@@ -69,9 +72,11 @@ def Find_All_Order():
                     Update_Cancel(Order_Code, True)
                     if int(i['use_point']) > 0:
                         Edit_Point(i['UserId'], i['use_point'])
-                        push_Message(i['UserId'],f'Point Back{i["use_point"]}\nขออภัยค่ะคุณลูกค้าหลังจาก 30 นาทีของการสั่งอาหาร รายการจะถูกยกเลิกอัตโนมัติเพราะลูกค้าโอนเงินล่าช้า กรุณาเลือกสั่งรายการอาหารใหม่อีกครั้งค่ะ🙏')
+                        ments = Make_Base(i['UserId'], i['use_point'])
+                        push_Message2(ments)
                     else:
-                        push_Message(i['UserId'],'ขออภัยค่ะคุณลูกค้าหลังจาก 30 นาทีของการสั่งอาหาร รายการจะถูกยกเลิกอัตโนมัติเพราะลูกค้าโอนเงินล่าช้า กรุณาเลือกสั่งรายการอาหารใหม่อีกครั้งค่ะ🙏')
+                        ments = Make_Base(i['UserId'], 0)
+                        push_Message2(ments)
                     
 
             elif not i["deposit"] :
@@ -84,9 +89,11 @@ def Find_All_Order():
                     Update_Cancel(Order_Code, True)
                     if int(i['use_point']) > 0:
                         Edit_Point(i['UserId'], i['use_point'])
-                        push_Message(i['UserId'],f'Point Back{i["use_point"]}\nขออภัยค่ะคุณลูกค้าหลังจาก 30 นาทีของการสั่งอาหาร รายการจะถูกยกเลิกอัตโนมัติเพราะลูกค้าโอนเงินล่าช้า กรุณาเลือกสั่งรายการอาหารใหม่อีกครั้งค่ะ🙏')
+                        ments = Make_Base(i['UserId'], i['use_point'])
+                        push_Message2(ments)
                     else:
-                        push_Message(i['UserId'],'ขออภัยค่ะคุณลูกค้าหลังจาก 30 นาทีของการสั่งอาหาร รายการจะถูกยกเลิกอัตโนมัติเพราะลูกค้าโอนเงินล่าช้า กรุณาเลือกสั่งรายการอาหารใหม่อีกครั้งค่ะ🙏')
+                        ments = Make_Base(i['UserId'], 0)
+                        push_Message2(ments)
                     
 
         if "Wait_Time" in i:
@@ -106,14 +113,14 @@ def Find_All_Order():
     return datas
 
 def push_Message2(datas):
-        Line_tokens = f"Bearer Tk7BbAc9682XQuHWap8MIwUjKOqXV+aQ1a4XJWaSOnIBpbG1AT5dRtRnSTyeIjCJBdNolK8sDhEF5xbxK9ygvU0h8TiC1tgKHlGHGMSNoNB1lOBTkWs1aRqt54k26x1UEvig5LdK0iN+CClOO29z0AdB04t89/1O/w1cDnyilFU="
-        header = {
-            "Authorization": Line_tokens,
-            "Content-Type": "application/json"
-        }
-        url = f"https://api.line.me/v2/bot/message/push"
-        
-        response = requests.post(url, headers=header, data=json.dumps(datas))
+    Line_tokens = f"Bearer Tk7BbAc9682XQuHWap8MIwUjKOqXV+aQ1a4XJWaSOnIBpbG1AT5dRtRnSTyeIjCJBdNolK8sDhEF5xbxK9ygvU0h8TiC1tgKHlGHGMSNoNB1lOBTkWs1aRqt54k26x1UEvig5LdK0iN+CClOO29z0AdB04t89/1O/w1cDnyilFU="
+    header = {
+        "Authorization": Line_tokens,
+        "Content-Type": "application/json"
+    }
+    url = f"https://api.line.me/v2/bot/message/push"
+    
+    response = requests.post(url, headers=header, data=json.dumps(datas))
 
 def Update_deposit(Order_Code, deposit):
     myquery = {"Order_Code": str(Order_Code)}
@@ -346,60 +353,3 @@ if __name__ == "__main__":
     x = WaitTime.find({})
     for i in x:
         print(i)
-
-    # find_WTime('2023-01-02',0)
-    # Add_cus_AddrData(5485851021533487,{'주소이름':'광주집','주소1':'월곡동','주소2':'빌라','좌표1':35.1673079492069,'좌표2':126.80982365415,})
-    # www = WaitTime.find_one({"Time":'2022.12.15 21:25:33'})
-    # www = WaitTime.find()
-    # for i in www:
-    #     print(i)
-    # timezone_kst = timezone(timedelta(hours=9))
-    # datetime_utc2 = datetime.now(timezone_kst)
-
-    # format = '%Y-%m-%d'
-
-    # str_datetime = datetime.strftime(datetime_utc2, format)
-    # print(str_datetime)
-
-    # timezone_kst = timezone(timedelta(hours=9))
-    # datetime_utc2 = datetime.now(timezone_kst)
-    # format = '%Y-%m-%d %H:%M:%S'
-
-    # datetime_result = datetime.strptime("2022-12-18 17:48:00", format)
-    # dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
-
-    # datess = dt_timezone - datetime_utc2
-    # print(dt_timezone)
-    # print(datetime_utc2)
-    # print(datess)
-    # print(type(datess.seconds))
-    # print(type(datess.days))
-    # str_datetime = datetime.strftime(datetime_utc2, format)
-
-
-    # find_money('2022-12-17',17000)
-    # Find_All_Order()
-    # print(www["message"])
-    # tet = pattern.search(www["message"]).group()
-    # print(tet.replace("- 매장명 : ",""))
-    # Insert_Data("Uad859360a7e2589c8c213b3b47fc27a2",'크턱',orderdata,cart)
-    # Drop_Users()
-    # z = randrange(0,900)
-    # Order_Code = str(datetime.now().hour) + str(datetime.now().month) + str(datetime.now().year) + str(datetime.now().day) + str(int(datetime.now().microsecond / 1000)) + str(z)[-1]
-    # print('Order_Code')
-    # x = errcol.find()
-    # for i in x:
-    #     print(i)
-    # find_Order_Datas('Uad859360a7e2589c8c213b3b47fc27a2')
-    # print(find_service())
-    # Order_Code = shortuuid.uuid()
-    # print(Order_Code)
-    # print(type(Order_Code))
-    # print(find_service())
-    # Insert_cust("크턱", "010-6675-5961")
-    # find_Allcust()
-    # DB_Order_Data('LqVxBH5pAxpWvnJhYEfVR8')
-    # print(find_Account())
-    # Drop_Users()
-    # Insert_Err("sdsdsdsdsds")
-    # Edit_Data("1382022238380", "https://ibb.co/r22bKFs")

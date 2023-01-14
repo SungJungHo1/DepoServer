@@ -257,5 +257,152 @@ def Shop_Link(userId,point,Market_Name):
 
     return datas
 
+
+def Make_Base(userId,point):
+
+    datas = {
+            "to": userId,
+            "messages": [
+                {
+                    "type": "flex",
+                    "altText": "ข้อมูลการยกเลิก!",
+                    "contents": {
+                        "type": "carousel",
+                        "contents": [
+                            Time_30(point)
+                        ]
+                    }
+                }
+            ]
+    }
+    return datas
+
+def Time_30(point):
+    datas = {
+        "type": "bubble",
+        "body": {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
+            {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                {
+                    "type": "text",
+                    "text": "ข้อมูลการยกเลิก",
+                    "weight": "bold",
+                    "size": "xxl",
+                    "color": "#FF3333"
+                }
+                ],
+                "alignItems": "center"
+            },
+            {
+                "type": "box",
+                "layout": "vertical",
+                "margin": "xxl",
+                "spacing": "sm",
+                "contents": [
+                {
+                    "type": "text",
+                    "text": "포인트 3000",
+                    "contents": [
+                    {
+                        "type": "span",
+                        "text": "พ้อยท์"
+                    },
+                    {
+                        "type": "span",
+                        "text": str(format(int(point), ',')),
+                        "color": "#1DB446",
+                        "weight": "bold",
+                        "size": "xl"
+                    }
+                    ]
+                }
+                ],
+                "alignItems": "center"
+            },
+            {
+                "type": "separator",
+                "margin": "md"
+            },
+            {
+                "type": "text",
+                "text": "ขออภัยค่ะคุณลูกค้าหลังจาก",
+                "contents": [
+                {
+                    "type": "span",
+                    "text": "ขออภัยค่ะคุณลูกค้า"
+                }
+                ],
+                "align": "center"
+            },
+            {
+                "type": "text",
+                "text": "หลังจาก  30",
+                "align": "center",
+                "contents": [
+                {
+                    "type": "span",
+                    "text": "หลังจาก  "
+                },
+                {
+                    "type": "span",
+                    "text": "30",
+                    "color": "#FF3333",
+                    "weight": "bold",
+                    "size": "xl"
+                }
+                ]
+            },
+            {
+                "type": "text",
+                "text": "นาทีของการสั่งอาหาร",
+                "margin": "none",
+                "align": "center"
+            },
+            {
+                "type": "text",
+                "text": "รายการจะถูกยกเลิกอัตโนมัติเพราะลูกค้าโอนเงินล่าช้า",
+                "margin": "none",
+                "wrap": True,
+                "align": "center"
+            },
+            {
+                "type": "text",
+                "text": "กรุณาเลือกสั่งรายการอาหารใหม่อีกครั้งค่ะ",
+                "margin": "none",
+                "wrap": True,
+                "align": "center"
+            },
+            {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                {
+                    "type": "button",
+                    "action": {
+                    "type": "uri",
+                    "label": "หาร้านอาหารอื่นๆ",
+                    "uri": "https://liff.line.me/1657404178-vbEl737y"
+                    },
+                    "style": "primary",
+                    "color": "#B266FF"
+                }
+                ],
+                "margin": "lg"
+            }
+            ]
+        },
+        "styles": {
+            "footer": {
+            "separator": True
+            }
+        }
+    }
+    return datas
+
 if __name__ == "__main__":
     print("sd")
