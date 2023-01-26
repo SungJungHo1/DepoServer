@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
 from Get_yogiyo import *
 from DBMaker import *
 from fastapi import FastAPI, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 import time
 from pydantic import BaseModel
+
 app = FastAPI()
 
 
@@ -97,24 +99,35 @@ if __name__ == "__main__":
     # print(money)
     text = '요기요고객센터\n[주문 접수 안내]\n\n주문해주셔서 감사합니다.\n\n고객님의 소중한 주문이 정상 접수되어, 40분 내외로 도착 할 예정입니다.\n\n- 주문 일시 : 2023/01/04 19:54\n- 주문 번호 : F2301041953J99A8\n- 매장명 : 꼬치상회-월곡점\n- 주문 내역 : I.V 프로틴 흑당 밀크티 x 1 외 1 건\n- 배달 주소 : 경기도 이천시 중리동 (중\n'
     text2 = '요기요고객센터\n[익스프레스 주문 안내]\n\n고객님의 주문이 14분 내외로 도착할 예정입니다.\n\n요기요 익스프레스가 빠르고 정확하게 배달해드릴게요.\n\n-  주문 일시 : 2023/01/02 15:26\n-  도착 예정 : 2023/01/02 15:43\n-  주문 번호 : F2301021526JZEA8\n-  매장명 : 용천통닭-월곡점\n-  주문 내역 : 통두마리 x 1\n-  배\n'
-    if "주문 접수 안내" in text:
 
-        timezone_kst = timezone(timedelta(hours=9))
-        datetime_utc2 = datetime.now(timezone_kst)
-        format = '%Y-%m-%d'
-        str_datetime = datetime.strftime(datetime_utc2, format)
-        
-        pattern = re.compile("정상 접수되어, \d+")
-        tet = pattern.search(text).group()
-        xx = tet.replace('정상 접수되어, ',"")
+    text3 = '[Web발신]\n[주문 전달 실패]\r\n\r\n소중한 식사 시간에 불편을 드려 죄송합니다.\r\n매장과의 연동 오류로 고객님의 주문이 음식점으로 전달되지 못했습니다.\r\n다른 음식점으로 주문을 부탁드립니다.\r\n\r\n- 주문 일시 : 2023/01/26 17:41\r\n- 주문 번호 : F2301261741J1YA8\r\n- 취소 사유 : 주문 전달 실패 (매장 연동 오류)\r\n- 매장명 : 롯데리아-인천불로점\r\n- 메뉴 : NEW홈투게더팩（사이다） x 1 외 1 건\r\n- 취소 금액 : 28,700원\r\n\r\n※ 24시 이후 취소 환불은 카드사 및 결제 수단에 따라 약 2~4일 정도 소요될 수 있습니다.\r\n(단, 주말, 공휴일 제외)\r\n\r\n서비스 이용에 불편을 드려 대단히 죄송합니다.'
+
+    if "취소" in text3:
 
         pattern2 = re.compile("매장명 : \S+")
-        tet2 = pattern2.search(text).group()
+        tet2 = pattern2.search(text3).group()
         MarketName = tet2.replace('매장명 : ',"")
-        print(xx)
+
         print(MarketName)
 
-        find_WTime(date = str_datetime,time = int(xx),MarketName = MarketName)
+    # if "주문 접수 안내" in text:
+
+    #     timezone_kst = timezone(timedelta(hours=9))
+    #     datetime_utc2 = datetime.now(timezone_kst)
+    #     format = '%Y-%m-%d'
+    #     str_datetime = datetime.strftime(datetime_utc2, format)
+        
+    #     pattern = re.compile("정상 접수되어, \d+")
+    #     tet = pattern.search(text).group()
+    #     xx = tet.replace('정상 접수되어, ',"")
+
+    #     pattern2 = re.compile("매장명 : \S+")
+    #     tet2 = pattern2.search(text).group()
+    #     MarketName = tet2.replace('매장명 : ',"")
+    #     print(xx)
+    #     print(MarketName)
+
+    #     find_WTime(date = str_datetime,time = int(xx),MarketName = MarketName)
 
     # if "익스프레스 주문 안내" in text2:
 

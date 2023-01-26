@@ -20,9 +20,75 @@ mycustomer = mydb['Customer']
 myAccount = mydb['Account']
 errcol = mydb['Errors']
 service = mydb['service']
+Coupon_Data = mydb['Coupon_Data']
 
 WaitTime = mydb['WaitTime']
 Depo = mydb['Depo']
+
+def find_7OverUser():
+    timezone_kst = timezone(timedelta(hours=9))
+    datetime_utc2 = datetime.now(timezone_kst)
+    format1 = '%Y-%m-%d'
+    format2 = '%Y-%m-%d %H:%M:%S'
+
+    v = mycustomer.find({})
+    # for i in v:
+    #     if i["UserId"] == 'Ua80cd1a19a12cb88657950e300a68594':
+    #         print(i)
+    W_Coupon_List = []
+    for i in v:
+        date_count = 0
+        
+        if i['Last_Order_Time'] != "" and len(i['Last_Order_Time']) == 19:
+            # print(len(i['Last_Order_Time']))
+            # print(i['Last_Order_Time'])
+            datetime_result = datetime.strptime(i['Last_Order_Time'], format2)
+            dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
+            datess = datetime_utc2 - dt_timezone
+            date_count = datess.days
+        
+        elif i['Last_Order_Time'] != "" and len(i['Last_Order_Time']) == 10:
+            datetime_result = datetime.strptime(i['Last_Order_Time'], format1)
+            dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
+            datess = datetime_utc2 - dt_timezone
+            date_count = datess.days
+
+        if date_count > 7 and i["1W_Coupon"]:
+            W_Coupon_List.append({'datas':i,'count':date_count})
+    return W_Coupon_List
+
+def insert_Coupon(UserId,First_Coupon,W_Coupon,M_Coupon,지급일자,쿠폰명):
+    Coupon_Code = shortuuid.uuid()
+    mycustomer.update_one({"UserId": str(UserId)}, {
+        '$set': {'First_Coupon': First_Coupon,'1W_Coupon': W_Coupon,'1M_Coupon': M_Coupon,}})
+    mycustomer.update_one({"UserId": str(UserId)},{ '$addToSet': { 'coupon_List': {'지급일자':지급일자,"쿠폰내용":쿠폰명,'쿠폰번호':str(Coupon_Code),"쿠폰보유":True}} })
+    Insert_CouponTime(지급일자=지급일자,쿠폰내용=쿠폰명,쿠폰번호=str(Coupon_Code),유저아이디=str(UserId))
+
+def Find_All():
+    datas = []
+    x = mycustomer.find()
+    for i in x:
+        datas.append(i)
+    return datas
+
+def Insert_CouponTime(지급일자,쿠폰내용,쿠폰번호,유저아이디):
+    Coupon_Data.insert_one({"지급일자":지급일자,"쿠폰내용":쿠폰내용,'쿠폰번호':str(쿠폰번호),'소유자':유저아이디})
+
+def Order_Time_Check(datas):
+    for i in datas:
+        datetime_utc2 = datetime.now(timezone_kst)
+        format = '%Y-%m-%d'
+        item = i['datas']
+        지급일자STR = datetime.strftime(datetime_utc2, format)
+        if i['count'] >= 1 and i['count'] < 7 and item["First_Coupon"]:
+            # insert_Coupon(UserId=i["UserId"],First_Coupon=False,W_Coupon=True,M_Coupon=True,지급일자 = 지급일자STR,쿠폰명 = "첫주문 쿠폰")
+            print("1일 쿠폰 지급")
+        elif i['count'] >= 7 and i['count'] < 30 and item["1W_Coupon"]:
+            # insert_Coupon(UserId=i["UserId"],First_Coupon=False,W_Coupon=False,M_Coupon=True,지급일자 = 지급일자STR,쿠폰명 = "1주 쿠폰")
+            print("1주 쿠폰 지급")
+        elif i['count'] >= 30 and item["1M_Coupon"]:
+            # insert_Coupon(UserId=i["UserId"],First_Coupon=False,W_Coupon=False,M_Coupon=False,지급일자 = 지급일자STR,쿠폰명 = "1달 쿠폰")
+            print("1달 쿠폰 지급")
 
 def Insert_WaitTime(Time,message):
     WaitTime.insert_one({"Time":Time,"message":message})
@@ -49,7 +115,7 @@ def Find_All_Order():
                 datetime_result = datetime.strptime(i['Order_Time'], form)
                 dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
                 datess = datetime_utc2 - dt_timezone
-                if int(datess.seconds / 60) >= 20:
+                if int(datess.seconds / 60) >= 15:
                     Order_Code = i["Order_Code"]
                     Update_deposit(Order_Code, False)
                     Update_Cancel(Order_Code, True)
@@ -66,7 +132,7 @@ def Find_All_Order():
                 datetime_result = datetime.strptime(i['Order_Time'], form)
                 dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
                 datess = datetime_utc2 - dt_timezone
-                if int(datess.seconds / 60) >= 20:
+                if int(datess.seconds / 60) >= 15:
                     Order_Code = i["Order_Code"]
                     Update_deposit(Order_Code, False)
                     Update_Cancel(Order_Code, True)
@@ -157,8 +223,8 @@ def find_WTime(date,time,MarketName):
                     if 'Cancel' in i:
                         if not i["Cancel"]:
                             if i["deposit"] :
-                                dd = Wait_Time_Data(i['UserId'],i['UserName'],int(time) + 10,Market_Name)
-                                Update_WTDb(i['Order_Code'],int(time) + 10)
+                                dd = Wait_Time_Data(i['UserId'],i['UserName'],int(time) + 15,Market_Name)
+                                Update_WTDb(i['Order_Code'],int(time) + 15)
                                 push_Message2(dd)
                                 return
 
@@ -350,6 +416,43 @@ if __name__ == "__main__":
     # for i in ww:
     #     print(i)
 
-    x = WaitTime.find({})
-    for i in x:
-        print(i)
+    # x = WaitTime.find({})
+    # for i in x:
+    #     print(i)
+    timezone_kst = timezone(timedelta(hours=9))
+    datetime_utc2 = datetime.now(timezone_kst)
+    format1 = '%Y-%m-%d'
+    format2 = '%Y-%m-%d %H:%M:%S'
+
+    
+
+    v = mycustomer.find_one({'UserId':'Ua80cd1a19a12cb88657950e300a68594'})
+    print(v)
+    # for i in v:
+    #     if i["UserId"] == 'Ua80cd1a19a12cb88657950e300a68594':
+    #         print(i)
+    # finds = find_7OverUser()
+    # insert_Coupon(UserId='Ua80cd1a19a12cb88657950e300a68594',First_Coupon=False,W_Coupon=True,M_Coupon=True,지급일자 = "2023-01-25",쿠폰명 = "첫주문 쿠폰")
+    # Order_Time_Check(finds)
+    # W_Coupon_List = []
+    # for i in v:
+    #     date_count = 0
+        
+    #     if i['Last_Order_Time'] != "" and len(i['Last_Order_Time']) == 19:
+    #         # print(len(i['Last_Order_Time']))
+    #         # print(i['Last_Order_Time'])
+    #         datetime_result = datetime.strptime(i['Last_Order_Time'], format2)
+    #         dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
+    #         datess = datetime_utc2 - dt_timezone
+    #         date_count = datess.days
+        
+    #     elif i['Last_Order_Time'] != "" and len(i['Last_Order_Time']) == 10:
+    #         datetime_result = datetime.strptime(i['Last_Order_Time'], format1)
+    #         dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
+    #         datess = datetime_utc2 - dt_timezone
+    #         date_count = datess.days
+
+    #     if date_count > 7 and i["1W_Coupon"]:
+    #         W_Coupon_List.append(i)
+
+    # print(len(W_Coupon_List))
