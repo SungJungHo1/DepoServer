@@ -115,7 +115,7 @@ def Find_All_Order():
                 datetime_result = datetime.strptime(i['Order_Time'], form)
                 dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
                 datess = datetime_utc2 - dt_timezone
-                if int(datess.seconds / 60) >= 15:
+                if int(datess.seconds / 60) >= 20:
                     Order_Code = i["Order_Code"]
                     Update_deposit(Order_Code, False)
                     Update_Cancel(Order_Code, True)
@@ -132,7 +132,7 @@ def Find_All_Order():
                 datetime_result = datetime.strptime(i['Order_Time'], form)
                 dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
                 datess = datetime_utc2 - dt_timezone
-                if int(datess.seconds / 60) >= 15:
+                if int(datess.seconds / 60) >= 20:
                     Order_Code = i["Order_Code"]
                     Update_deposit(Order_Code, False)
                     Update_Cancel(Order_Code, True)
@@ -212,7 +212,7 @@ def Update_WTDb(Order_Code,Wait_Time):
     
     newvalues = {"$set": {"Order_End": False, "Del_End": False,"Wait_Time":Wait_Time,"Order_End_Time":str_datetime}}
     mycol.update_one(myquery, newvalues)
-
+#waittime +20분
 def find_WTime(date,time,MarketName):
     x = mycol.find({"Order_Time": {"$regex": date}}).sort("_id", -1)
     for i in x:
@@ -223,8 +223,8 @@ def find_WTime(date,time,MarketName):
                     if 'Cancel' in i:
                         if not i["Cancel"]:
                             if i["deposit"] :
-                                dd = Wait_Time_Data(i['UserId'],i['UserName'],int(time) + 15,Market_Name)
-                                Update_WTDb(i['Order_Code'],int(time) + 15)
+                                dd = Wait_Time_Data(i['UserId'],i['UserName'],int(time) + 20,Market_Name)
+                                Update_WTDb(i['Order_Code'],int(time) + 20)
                                 push_Message2(dd)
                                 return
 
