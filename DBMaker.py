@@ -270,11 +270,12 @@ def find_money(date,money):
         T_Money = totalPrice + int(i['delivery_fee']) + int(i['Service_Money'])
         str_datetime = datetime.strftime(datetime_utc2, format)
         Point = 0
+        Coupon = i["Coupon_Pay"]
         if "use_point" in i:
             Point = i["use_point"]
         if "Cancel" not in i:
             if "deposit" not in i:
-                if int(int(T_Money) - int(Point)) == int(money):
+                if int(int(T_Money) - int(Point) - int(Coupon)) == int(money):
                     datetime_result = datetime.strptime(i['Order_Time'], format)
                     dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
                     datess = datetime_utc2 - dt_timezone
