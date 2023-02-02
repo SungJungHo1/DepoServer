@@ -217,16 +217,17 @@ def find_WTime(date,time,MarketName):
     x = mycol.find({"Order_Time": {"$regex": date}}).sort("_id", -1)
     for i in x:
         if "Cart" in  i:
-            Market_Name = i["Cart"][0]['storeName']
-            if Market_Name == MarketName:
-                if not i["Order_End"] and not i["Del_End"]:
-                    if 'Cancel' in i:
-                        if not i["Cancel"]:
-                            if i["deposit"] :
-                                dd = Wait_Time_Data(i['UserId'],i['UserName'],int(time) + 20,Market_Name)
-                                Update_WTDb(i['Order_Code'],int(time) + 20)
-                                push_Message2(dd)
-                                return
+            if len(i["Cart"]) > 0:
+                Market_Name = i["Cart"][0]['storeName']
+                if Market_Name == MarketName:
+                    if not i["Order_End"] and not i["Del_End"]:
+                        if 'Cancel' in i:
+                            if not i["Cancel"]:
+                                if i["deposit"] :
+                                    dd = Wait_Time_Data(i['UserId'],i['UserName'],int(time) + 20,Market_Name)
+                                    Update_WTDb(i['Order_Code'],int(time) + 20)
+                                    push_Message2(dd)
+                                    return
 
 def Edit_Point(UserId, point):
     mycustomer.update_one({"UserId": str(UserId)}, {

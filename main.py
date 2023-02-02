@@ -70,6 +70,12 @@ def Waittime(item : Item):
 
     return item
 
+@app.post('/wait-time_Push')
+def Waittime_Push(item : Item):
+    print(item)
+
+    return item
+
 @app.post('/depo')
 def Depo(item : Item):
     timezone_kst = timezone(timedelta(hours=9))
