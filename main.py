@@ -63,7 +63,7 @@ def Times():
             Check_Days_Coupon()
             DaySwich = True
         
-        if int(hours) == 15 and int(minutes) >= 10 and not th_Swich:
+        if int(hours) >= 15 and int(minutes) >= 10 and not th_Swich:
             th_Swich = True
             일자,하루,일주일 = Find_Days_Remind_Data()
             print("진입")
