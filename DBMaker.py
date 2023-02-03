@@ -21,9 +21,22 @@ myAccount = mydb['Account']
 errcol = mydb['Errors']
 service = mydb['service']
 Coupon_Data = mydb['Coupon_Data']
+Remind_Data = mydb['Remind_Data']
 
 WaitTime = mydb['WaitTime']
 Depo = mydb['Depo']
+def Find_Days_Remind_Data():
+    timezone_kst = timezone(timedelta(hours=9))
+    datetime_utc2 = datetime.now(timezone_kst)
+    format1 = '%Y-%m-%d'
+    str_Days = datetime.strftime(datetime_utc2,format1)
+    Data = Remind_Data.find_one({'일자':str_Days})
+
+    return Data["일자"],Data["1일쿠폰"],Data["1주일 리마인드"]
+
+def insert_Remind_Data(days,W_datas,M_datas):
+
+    Remind_Data.insert_one({"일자":days,'1일쿠폰':W_datas,"1주일 리마인드":M_datas})
 
 def find_7OverUser():
     timezone_kst = timezone(timedelta(hours=9))
@@ -56,7 +69,9 @@ def find_7OverUser():
         if date_count > 7 and i["1W_Coupon"]:
             W_Coupon_List.append({'datas':i,'count':date_count})
     return W_Coupon_List
-
+def Updata_CD(UserId,First_Coupon,W_Coupon,M_Coupon):
+    mycustomer.update_one({"UserId": str(UserId)}, {
+        '$set': {'First_Coupon': First_Coupon,'1W_Coupon': W_Coupon,'1M_Coupon': M_Coupon,}})
 def insert_Coupon(UserId,First_Coupon,W_Coupon,M_Coupon,지급일자,쿠폰명):
     Coupon_Code = shortuuid.uuid()
     mycustomer.update_one({"UserId": str(UserId)}, {
@@ -73,22 +88,6 @@ def Find_All():
 
 def Insert_CouponTime(지급일자,쿠폰내용,쿠폰번호,유저아이디):
     Coupon_Data.insert_one({"지급일자":지급일자,"쿠폰내용":쿠폰내용,'쿠폰번호':str(쿠폰번호),'소유자':유저아이디})
-
-def Order_Time_Check(datas):
-    for i in datas:
-        datetime_utc2 = datetime.now(timezone_kst)
-        format = '%Y-%m-%d'
-        item = i['datas']
-        지급일자STR = datetime.strftime(datetime_utc2, format)
-        if i['count'] >= 1 and i['count'] < 7 and item["First_Coupon"]:
-            # insert_Coupon(UserId=i["UserId"],First_Coupon=False,W_Coupon=True,M_Coupon=True,지급일자 = 지급일자STR,쿠폰명 = "첫주문 쿠폰")
-            print("1일 쿠폰 지급")
-        elif i['count'] >= 7 and i['count'] < 30 and item["1W_Coupon"]:
-            # insert_Coupon(UserId=i["UserId"],First_Coupon=False,W_Coupon=False,M_Coupon=True,지급일자 = 지급일자STR,쿠폰명 = "1주 쿠폰")
-            print("1주 쿠폰 지급")
-        elif i['count'] >= 30 and item["1M_Coupon"]:
-            # insert_Coupon(UserId=i["UserId"],First_Coupon=False,W_Coupon=False,M_Coupon=False,지급일자 = 지급일자STR,쿠폰명 = "1달 쿠폰")
-            print("1달 쿠폰 지급")
 
 def Insert_WaitTime(Time,message):
     WaitTime.insert_one({"Time":Time,"message":message})
@@ -187,6 +186,7 @@ def push_Message2(datas):
     url = f"https://api.line.me/v2/bot/message/push"
     
     response = requests.post(url, headers=header, data=json.dumps(datas))
+    print(response)
 
 def Update_deposit(Order_Code, deposit):
     myquery = {"Order_Code": str(Order_Code)}
@@ -413,6 +413,40 @@ def push_Message(UserId,text):
             ]}
         response = requests.post(url, headers=header, data=json.dumps(datas))
 
+def Check_Days_Coupon():
+    timezone_kst = timezone(timedelta(hours=9))
+    datetime_utc2 = datetime.now(timezone_kst)
+    format1 = '%Y-%m-%d'
+    format2 = '%Y-%m-%d %H:%M:%S'
+    
+    v = Find_All()
+    W_Coupon_List = []
+    W_Coupon_List2 = []
+    for i in v:
+        date_count = 0
+        
+        if i['Last_Order_Time'] != "" and len(i['Last_Order_Time']) == 19:
+            # print(len(i['Last_Order_Time']))
+            # print(i['Last_Order_Time'])
+            datetime_result = datetime.strptime(i['Last_Order_Time'], format2)
+            dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
+            datess = datetime_utc2 - dt_timezone
+            date_count = datess.days
+        
+        elif i['Last_Order_Time'] != "" and len(i['Last_Order_Time']) == 10:
+            datetime_result = datetime.strptime(i['Last_Order_Time'], format1)
+            dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
+            datess = datetime_utc2 - dt_timezone
+            date_count = datess.days
+
+        if date_count >= 1 and date_count < 7 and i["1W_Coupon"]:
+            W_Coupon_List.append(i)
+
+        if date_count >= 7 and i["1M_Coupon"]:
+            W_Coupon_List2.append(i)
+
+    insert_Remind_Data(datetime.strftime(datetime_utc2,format1),W_Coupon_List,W_Coupon_List2)
+
 if __name__ == "__main__":
     # ww = Depo.find({})
     # for i in ww:
@@ -421,22 +455,29 @@ if __name__ == "__main__":
     # x = WaitTime.find({})
     # for i in x:
     #     print(i)
-    timezone_kst = timezone(timedelta(hours=9))
-    datetime_utc2 = datetime.now(timezone_kst)
-    format1 = '%Y-%m-%d'
-    format2 = '%Y-%m-%d %H:%M:%S'
+    
 
     
 
-    v = mycustomer.find_one({'UserId':'Ua80cd1a19a12cb88657950e300a68594'})
-    print(v)
+    # v = mycustomer.find_one({'UserId':'Ua80cd1a19a12cb88657950e300a68594'})
+    # print(v)
     # for i in v:
     #     if i["UserId"] == 'Ua80cd1a19a12cb88657950e300a68594':
     #         print(i)
     # finds = find_7OverUser()
     # insert_Coupon(UserId='Ua80cd1a19a12cb88657950e300a68594',First_Coupon=False,W_Coupon=True,M_Coupon=True,지급일자 = "2023-01-25",쿠폰명 = "첫주문 쿠폰")
     # Order_Time_Check(finds)
+
+
+
+    # timezone_kst = timezone(timedelta(hours=9))
+    # datetime_utc2 = datetime.now(timezone_kst)
+    # format1 = '%Y-%m-%d'
+    # format2 = '%Y-%m-%d %H:%M:%S'
+
+    # v = Find_All()
     # W_Coupon_List = []
+    # W_Coupon_List2 = []
     # for i in v:
     #     date_count = 0
         
@@ -454,7 +495,20 @@ if __name__ == "__main__":
     #         datess = datetime_utc2 - dt_timezone
     #         date_count = datess.days
 
-    #     if date_count > 7 and i["1W_Coupon"]:
+    #     if date_count >= 1 and date_count < 7 and i["1W_Coupon"]:
     #         W_Coupon_List.append(i)
 
+    #     if date_count >= 7 and i["1M_Coupon"]:
+    #         W_Coupon_List2.append(i)
+
+    # insert_Remind_Data()
     # print(len(W_Coupon_List))
+    # print(len(W_Coupon_List2))
+
+    # Check_Days_Coupon()
+    일자,주일,리마인드 = Find_Days_Remind_Data()
+    print(주일)
+    # xxx = Remind_Data.find({})
+    # for i in xxx:
+
+    #     print(i["일자"])

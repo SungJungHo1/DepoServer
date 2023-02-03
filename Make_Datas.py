@@ -1,3 +1,9 @@
+from datetime import datetime, timedelta, timezone
+import time
+import threading
+import requests
+import json
+
 def Wait_Time_Data(userId,UserName,Time,Market_Name):
 
     datas = {
@@ -404,5 +410,112 @@ def Time_30(point):
     }
     return datas
 
+def First_Order_Coup(userId,ment):
+
+    datas = {
+            "to": userId,
+            "messages": [
+                {
+                    "type": "flex",
+                    "altText": '🎁คูปอง1️⃣0️⃣0️⃣%สำหรับลูกค้าใหม่🎁',
+                    "contents": {
+                        "type": "carousel",
+                        "contents": [
+                            Coup_Data(ment)
+                        ]
+                    }
+                }
+            ]
+    }
+    return datas
+
+def Coup_Data(ment):
+    datas = {
+        "type": "bubble",
+        "hero": {
+            "type": "image",
+            "url": "https://i.ibb.co/Cs1dgKv/Picsart-23-02-02-23-02-05-294.jpg",
+            "size": "full",
+            "aspectRatio": "1:1.9",
+            "aspectMode": "cover",
+            "action": {
+            "type": "uri",
+            "uri": "http://linecorp.com/"
+            }
+        },
+        "body": {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
+            {
+                "type": "button",
+                "action": {
+                "type": "uri",
+                "label": "ใช้คูปอง",
+                "uri": "https://liff.line.me/1657404178-vbEl737y"
+                },
+                "style": "primary",
+                "height": "sm",
+                "color": "#aba5fd"
+            },
+            {
+                "type": "text",
+                "text": ment,
+                "weight": "bold",
+                "size": "xl",
+                "wrap": True,
+                "color": "#ffffff"
+            }
+            ],
+            "backgroundColor": "#2b0f59"
+        }
+    }
+    return datas
+
+def push_Message_Test(datas):
+    Line_tokens = f"Bearer Tk7BbAc9682XQuHWap8MIwUjKOqXV+aQ1a4XJWaSOnIBpbG1AT5dRtRnSTyeIjCJBdNolK8sDhEF5xbxK9ygvU0h8TiC1tgKHlGHGMSNoNB1lOBTkWs1aRqt54k26x1UEvig5LdK0iN+CClOO29z0AdB04t89/1O/w1cDnyilFU="
+    header = {
+        "Authorization": Line_tokens,
+        "Content-Type": "application/json"
+    }
+    url = f"https://api.line.me/v2/bot/message/push"
+    
+    response = requests.post(url, headers=header, data=json.dumps(datas))
+    print(response.json())
+
+
 if __name__ == "__main__":
-    print("sd")
+    push_Message_Test(First_Order_Coup('Ua80cd1a19a12cb88657950e300a68594','นาทีทองสำหรับลูกค้าวันนี้วันสุดท้ายของการใช้คูปองค่าบริการฟรี100%เข้าไปเป็นเพื่อนสนิทกับFASTFOODได้นะคะ'))
+    # def getHtml():
+    #     for i in range(5):
+    #         print(i)
+    #         time.sleep(5)
+    #     print('end')
+
+    # timezone_kst = timezone(timedelta(hours=9))
+    
+    # days = 0
+
+    # DaySwich = False
+    # th_Swich = False
+
+    # while True:
+    #     datetime_utc2 = datetime.now(timezone_kst)
+
+    #     if days != datetime_utc2.day:    
+    #         days = datetime_utc2.day
+    #         DaySwich = False
+    #         print("1")
+    #     if not th_Swich:
+    #         th_Swich = True
+    #         t1 = threading.Thread(target=getHtml)
+    #         t1.daemon = True
+    #         t1.start()
+    #     hours = datetime_utc2.hour
+    #     minutes = datetime_utc2.minute
+    #     print("2")
+
+    #     if int(hours) == 18 and int(minutes) >= 58 and not DaySwich:
+    #         print('sdsd')
+    #         DaySwich = True
+    #     time.sleep(1)
