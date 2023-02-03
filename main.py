@@ -32,8 +32,9 @@ def Send_1Day_Remind(일자,하루):
         push_Message2(First_Order_Coup(i['UserId'],'อยากกินอาหารอะไรก็สั่งได้เลยนะคะต้อนรับสำหรับลูกค้าใหม่ให้คูปองค่าบริการฟรี 100%'))#첫주문 맨트
         
 
-def Send_1W_Remind(일주일):
+def Send_1W_Remind(일자,일주일):
     for i in 일주일:
+        print(일자)
         print("진입2")
         push_Message2(First_Order_Coup(i['UserId'],'นาทีทองสำหรับลูกค้าวันนี้วันสุดท้ายของการใช้คูปองค่าบริการฟรี 100% เข้าไปเป็นเพื่อนสนิทกับ FASTFOOD ได้นะคะ'))#일주일 맨트
         Updata_CD(i['UserId'],False,False,True)
@@ -68,7 +69,7 @@ def Times():
             일자,하루,일주일 = Find_Days_Remind_Data()
             print("진입")
             t1 = threading.Thread(target=Send_1Day_Remind, args=(일자,하루))
-            t2 = threading.Thread(target=Send_1W_Remind , args=(일주일))
+            t2 = threading.Thread(target=Send_1W_Remind , args= (일자,일주일))
             t1.daemon = True
             t2.daemon = True
             t1.start()
