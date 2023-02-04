@@ -237,25 +237,26 @@ def find_Cansel(date,MarketName):
     x = mycol.find({"Order_Time": {"$regex": date}}).sort("_id", -1)
     for i in x:
         if "Cart" in  i:
-            Market_Name = i["Cart"][0]['storeName']
-            if Market_Name == MarketName:
-                if not i["Order_End"] and not i["Del_End"]:
-                    if 'Cancel' in i:
-                        if not i["Cancel"]:
-                            if i["deposit"] :
-                                Order_Code = i["Order_Code"]
-                                UserId = i['UserId']
-                                totalPrice = 0
-                                for v in i["Cart"]:
-                                    totalPrice = totalPrice + int(v['totalPrice'])
-                                Back_Point = totalPrice + int(i['delivery_fee']) + int(i['Service_Money']) - int(i['Coupon_Pay'])
-                                dd = Shop_Link(UserId,Back_Point,Market_Name)
-                                Update_Db(Order_Code, True, False,False)
-                                Edit_Point(UserId, Back_Point)
-                                Update_deposit(Order_Code, False)
-                                Update_Cancel(Order_Code, True)
-                                push_Message2(dd)
-                                return
+            if len(i["Cart"]) > 0:
+                Market_Name = i["Cart"][0]['storeName']
+                if Market_Name == MarketName:
+                    if not i["Order_End"] and not i["Del_End"]:
+                        if 'Cancel' in i:
+                            if not i["Cancel"]:
+                                if i["deposit"] :
+                                    Order_Code = i["Order_Code"]
+                                    UserId = i['UserId']
+                                    totalPrice = 0
+                                    for v in i["Cart"]:
+                                        totalPrice = totalPrice + int(v['totalPrice'])
+                                    Back_Point = totalPrice + int(i['delivery_fee']) + int(i['Service_Money']) - int(i['Coupon_Pay'])
+                                    dd = Shop_Link(UserId,Back_Point,Market_Name)
+                                    Update_Db(Order_Code, True, False,False)
+                                    Edit_Point(UserId, Back_Point)
+                                    Update_deposit(Order_Code, False)
+                                    Update_Cancel(Order_Code, True)
+                                    push_Message2(dd)
+                                    return
   
 
 def find_money(date,money):
