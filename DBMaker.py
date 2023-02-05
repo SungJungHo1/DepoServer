@@ -120,6 +120,7 @@ def Find_All_Order():
                     Order_Code = i["Order_Code"]
                     Update_deposit(Order_Code, False)
                     Update_Cancel(Order_Code, True)
+                    Edit_30MinCancel(Order_Code)
                     if int(i['use_point']) > 0:
                         Edit_Point(i['UserId'], i['use_point'])
                         ments = Make_Base(i['UserId'], i['use_point'])
@@ -137,6 +138,7 @@ def Find_All_Order():
                     Order_Code = i["Order_Code"]
                     Update_deposit(Order_Code, False)
                     Update_Cancel(Order_Code, True)
+                    Edit_30MinCancel(Order_Code)
                     if int(i['use_point']) > 0:
                         Edit_Point(i['UserId'], i['use_point'])
                         ments = Make_Base(i['UserId'], i['use_point'])
@@ -154,6 +156,7 @@ def Find_All_Order():
                     Order_Code = i["Order_Code"]
                     Update_deposit(Order_Code, False)
                     Update_Cancel(Order_Code, True)
+                    Edit_30MinCancel(Order_Code)
                     if int(i['use_point']) > 0:
                         Edit_Point(i['UserId'], i['use_point'])
                         ments = Make_Base(i['UserId'], i['use_point'])
@@ -234,6 +237,10 @@ def find_WTime(date,time,MarketName):
 def Edit_Point(UserId, point):
     mycustomer.update_one({"UserId": str(UserId)}, {
         '$inc': {'Point': int(point)}})
+
+def Edit_30MinCancel(Order_Code):
+    mycol.update_one({"Order_Code": str(Order_Code)}, {
+        '$set': {'Time_30Min_Cancel': True}})
 
 def find_Cansel(date,MarketName):
     x = mycol.find({"Order_Time": {"$regex": date}}).sort("_id", -1)
