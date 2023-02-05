@@ -32,7 +32,7 @@ def Find_Days_Remind_Data():
     str_Days = datetime.strftime(datetime_utc2,format1)
     Data = Remind_Data.find_one({'일자':str_Days})
     if Data == None:
-        return None,None,None
+        return None
     else:
         return Data["일자"],Data["1일쿠폰"],Data["1주일 리마인드"]
 
