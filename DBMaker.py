@@ -188,7 +188,7 @@ def push_Message2(datas):
     url = f"https://api.line.me/v2/bot/message/push"
     
     response = requests.post(url, headers=header, data=json.dumps(datas))
-    print(response)
+    # print(response)
 
 def Update_deposit(Order_Code, deposit):
     myquery = {"Order_Code": str(Order_Code)}

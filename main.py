@@ -146,7 +146,6 @@ def Depo(item : Item):
         tet = pattern.search(item.message.replace("원","").replace(",","")).group()
         if tet != None:
             money = tet.replace("입금","").replace(",","")
-            print(money)
             Find_Depo(str_datetime, int(money))
     return item
 
