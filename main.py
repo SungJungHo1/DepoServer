@@ -28,7 +28,7 @@ def Send_1Day_Remind(일자,하루):
     for i in 하루:
         # print("진입1")
         time.sleep(5)
-        insert_Coupon(i['UserId'],False,True,True,일자,'First Coupon')
+        insert_Coupon(i['UserId'],False,True,True,일자,'💗First Order Coupon💗')
         push_Message2(First_Order_Coup(i['UserId'],'อยากกินอาหารอะไรก็สั่งได้เลยนะคะต้อนรับสำหรับลูกค้าใหม่ให้คูปองค่าบริการฟรี 100%'))#첫주문 맨트
         
 
