@@ -143,9 +143,9 @@ def Depo(item : Item):
 
     pattern = re.compile("입금\d+")
     if "네이버" not in item.message:
-        tet = pattern.search(item.message.replace("원","").replace(",","")).group()
+        tet = pattern.search(item.message.replace("원","").replace(",",""))
         if tet != None:
-            money = tet.replace("입금","").replace(",","")
+            money = tet.group().replace("입금","").replace(",","")
             Find_Depo(str_datetime, int(money))
     return item
 
@@ -176,8 +176,7 @@ if __name__ == "__main__":
     #     print(MarketName)
 
     pattern = re.compile("입금\d+")
-    if "네이버" not in text4:
-        tet = pattern.search(text4.replace("원","").replace(",","")).group()
-        if tet != None:
-            money = tet.replace("입금","").replace(",","")
-            print(money)
+    tet = pattern.search(text4.replace("원","").replace(",",""))
+    if tet != None:
+        money = tet.group().replace("입금","").replace(",","")
+        print(money)
