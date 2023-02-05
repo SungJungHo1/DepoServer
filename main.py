@@ -65,15 +65,19 @@ def Times():
             DaySwich = True
         
         if int(hours) >= 15 and int(minutes) >= 10 and not th_Swich:
-            th_Swich = True
-            일자,하루,일주일 = Find_Days_Remind_Data()
-            # print("진입")
-            t1 = threading.Thread(target=Send_1Day_Remind, args=(일자,하루))
-            t2 = threading.Thread(target=Send_1W_Remind , args= (일자,일주일))
-            t1.daemon = True
-            t2.daemon = True
-            t1.start()
-            t2.start()
+            if Find_Days_Remind_Data() != None:
+                th_Swich = True
+                일자,하루,일주일 = Find_Days_Remind_Data()
+                # print("진입")
+                t1 = threading.Thread(target=Send_1Day_Remind, args=(일자,하루))
+                t2 = threading.Thread(target=Send_1W_Remind , args= (일자,일주일))
+                t1.daemon = True
+                t2.daemon = True
+                t1.start()
+                t2.start()
+            else:
+                Check_Days_Coupon()
+                DaySwich = True
 
         Find_All_Order()
 
@@ -139,8 +143,9 @@ def Depo(item : Item):
     pattern = re.compile("입금\S+")
     if "네이버" not in item.message:
         tet = pattern.search(item.message.replace("원","")).group()
-        money = tet.replace("입금","").replace(",","")
-        Find_Depo(str_datetime, int(money))
+        if tet != None:
+            money = tet.replace("입금","").replace(",","")
+            Find_Depo(str_datetime, int(money))
     return item
 
 @app.get('/Thread_Start')

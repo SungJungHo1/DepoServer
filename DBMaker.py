@@ -31,8 +31,10 @@ def Find_Days_Remind_Data():
     format1 = '%Y-%m-%d'
     str_Days = datetime.strftime(datetime_utc2,format1)
     Data = Remind_Data.find_one({'일자':str_Days})
-
-    return Data["일자"],Data["1일쿠폰"],Data["1주일 리마인드"]
+    if Data == None:
+        return None,None,None
+    else:
+        return Data["일자"],Data["1일쿠폰"],Data["1주일 리마인드"]
 
 def insert_Remind_Data(days,W_datas,M_datas):
 
@@ -449,9 +451,9 @@ def Check_Days_Coupon():
     insert_Remind_Data(datetime.strftime(datetime_utc2,format1),W_Coupon_List,W_Coupon_List2)
 
 if __name__ == "__main__":
-    # ww = Depo.find({})
-    # for i in ww:
-    #     print(i)
+    ww = Depo.find({})
+    for i in ww:
+        print(i)
 
     # x = WaitTime.find({})
     # for i in x:
