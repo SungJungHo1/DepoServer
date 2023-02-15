@@ -40,6 +40,11 @@ def insert_Remind_Data(days,W_datas,M_datas):
 
     Remind_Data.insert_one({"일자":days,'1일쿠폰':W_datas,"1주일 리마인드":M_datas})
 
+def find_Coupon_Name(쿠폰코드):
+
+    x = Coupon_Data.find_one({'쿠폰번호': 쿠폰코드})
+    return x
+
 def find_7OverUser():
     timezone_kst = timezone(timedelta(hours=9))
     datetime_utc2 = datetime.now(timezone_kst)
@@ -81,6 +86,9 @@ def insert_Coupon(UserId,First_Coupon,W_Coupon,M_Coupon,지급일자,쿠폰명):
     mycustomer.update_one({"UserId": str(UserId)},{ '$addToSet': { 'coupon_List': {'지급일자':지급일자,"쿠폰내용":쿠폰명,'쿠폰번호':str(Coupon_Code),"쿠폰보유":True}} })
     Insert_CouponTime(지급일자=지급일자,쿠폰내용=쿠폰명,쿠폰번호=str(Coupon_Code),유저아이디=str(UserId))
 
+def insert_ReCoupon(UserId,지급일자,쿠폰명,쿠폰번호):
+    mycustomer.update_one({"UserId": str(UserId)},{ '$addToSet': { 'coupon_List': {'지급일자':지급일자,"쿠폰내용":쿠폰명,'쿠폰번호':쿠폰번호,"쿠폰보유":True}} })
+
 def Find_All():
     datas = []
     x = mycustomer.find()
@@ -116,7 +124,7 @@ def Find_All_Order():
                 datetime_result = datetime.strptime(i['Order_Time'], form)
                 dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
                 datess = datetime_utc2 - dt_timezone
-                if int(datess.seconds / 60) >= 20:
+                if int(datess.seconds / 60) >= 30:
                     Order_Code = i["Order_Code"]
                     Update_deposit(Order_Code, False)
                     Update_Cancel(Order_Code, True)
@@ -128,13 +136,17 @@ def Find_All_Order():
                     else:
                         ments = Make_Base(i['UserId'], 0)
                         push_Message2(ments)
+                    if "Coupon_Code" in i:
+                        if i["Coupon_Code"] != "not":
+                            C_Data = find_Coupon_Name(i["Coupon_Code"])
+                            insert_ReCoupon(UserId=C_Data["소유자"],지급일자=C_Data["지급일자"],쿠폰명=C_Data["쿠폰내용"],쿠폰번호=C_Data["쿠폰번호"])
                     
         elif not i["Cancel"]:
             if "deposit" not in i:
                 datetime_result = datetime.strptime(i['Order_Time'], form)
                 dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
                 datess = datetime_utc2 - dt_timezone
-                if int(datess.seconds / 60) >= 20:
+                if int(datess.seconds / 60) >= 30:
                     Order_Code = i["Order_Code"]
                     Update_deposit(Order_Code, False)
                     Update_Cancel(Order_Code, True)
@@ -146,13 +158,16 @@ def Find_All_Order():
                     else:
                         ments = Make_Base(i['UserId'], 0)
                         push_Message2(ments)
-                    
+                    if "Coupon_Code" in i:
+                        if i["Coupon_Code"] != "not":
+                            C_Data = find_Coupon_Name(i["Coupon_Code"])
+                            insert_ReCoupon(UserId=C_Data["소유자"],지급일자=C_Data["지급일자"],쿠폰명=C_Data["쿠폰내용"],쿠폰번호=C_Data["쿠폰번호"])
 
             elif not i["deposit"] :
                 datetime_result = datetime.strptime(i['Order_Time'], form)
                 dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
                 datess = datetime_utc2 - dt_timezone
-                if int(datess.seconds / 60) >= 20:
+                if int(datess.seconds / 60) >= 30:
                     Order_Code = i["Order_Code"]
                     Update_deposit(Order_Code, False)
                     Update_Cancel(Order_Code, True)
@@ -164,6 +179,10 @@ def Find_All_Order():
                     else:
                         ments = Make_Base(i['UserId'], 0)
                         push_Message2(ments)
+                    if "Coupon_Code" in i:
+                        if i["Coupon_Code"] != "not":
+                            C_Data = find_Coupon_Name(i["Coupon_Code"])
+                            insert_ReCoupon(UserId=C_Data["소유자"],지급일자=C_Data["지급일자"],쿠폰명=C_Data["쿠폰내용"],쿠폰번호=C_Data["쿠폰번호"])
                     
 
         if "Wait_Time" in i:
@@ -253,6 +272,10 @@ def find_Cansel(date,MarketName):
                         if 'Cancel' in i:
                             if not i["Cancel"]:
                                 if i["deposit"] :
+                                    if "Coupon_Code" in i:
+                                        if i["Coupon_Code"] != "not":
+                                            C_Data = find_Coupon_Name(i["Coupon_Code"])
+                                            insert_ReCoupon(UserId=C_Data["소유자"],지급일자=C_Data["지급일자"],쿠폰명=C_Data["쿠폰내용"],쿠폰번호=C_Data["쿠폰번호"])
                                     Order_Code = i["Order_Code"]
                                     UserId = i['UserId']
                                     totalPrice = 0
@@ -458,9 +481,9 @@ def Check_Days_Coupon():
     insert_Remind_Data(datetime.strftime(datetime_utc2,format1),W_Coupon_List,W_Coupon_List2)
 
 if __name__ == "__main__":
-    ww = Depo.find({})
-    for i in ww:
-        print(i)
+    # ww = Depo.find({})
+    # for i in ww:
+    #     print(i)
 
     # x = WaitTime.find({})
     # for i in x:
@@ -469,11 +492,14 @@ if __name__ == "__main__":
 
     
 
-    # v = mycustomer.find_one({'UserId':'Ua80cd1a19a12cb88657950e300a68594'})
-    # print(v)
-    # for i in v:
-    #     if i["UserId"] == 'Ua80cd1a19a12cb88657950e300a68594':
-    #         print(i)
+    # v = mycustomer.find({})
+    v = mycol.find({}).sort("_id",-1)
+    b = Coupon_Data.find_one({})
+    
+    print(find_Coupon_Name(b["쿠폰번호"]))
+    for i in v:
+        if i["Coupon_Code"] != "not":
+            print(find_Coupon_Name(i["Coupon_Code"]))
     # finds = find_7OverUser()
     # insert_Coupon(UserId='Ua80cd1a19a12cb88657950e300a68594',First_Coupon=False,W_Coupon=True,M_Coupon=True,지급일자 = "2023-01-25",쿠폰명 = "첫주문 쿠폰")
     # Order_Time_Check(finds)
@@ -516,8 +542,8 @@ if __name__ == "__main__":
     # print(len(W_Coupon_List2))
 
     # Check_Days_Coupon()
-    일자,주일,리마인드 = Find_Days_Remind_Data()
-    print(주일)
+    # 일자,주일,리마인드 = Find_Days_Remind_Data()
+    # print(주일)
     # xxx = Remind_Data.find({})
     # for i in xxx:
 
