@@ -215,7 +215,7 @@ def Shop_Link(userId,point,Market_Name):
                                     },
                                     {
                                         "type": "text",
-                                        "text": f"พ้อยท์ {point}",
+                                        "text": f"My Cash {point}",
                                         "wrap": True,
                                         "align": "center",
                                         "size": "xl",
@@ -316,7 +316,7 @@ def Time_30(point):
                     "contents": [
                     {
                         "type": "span",
-                        "text": "พ้อยท์"
+                        "text": "My Cash"
                     },
                     {
                         "type": "span",
