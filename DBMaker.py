@@ -307,9 +307,11 @@ def find_money(date,money):
         Coupon = i["Coupon_Pay"]
         if "use_point" in i:
             Point = i["use_point"]
+        if "use_Repoint" in i:
+            RePoint = i["use_Repoint"]
         if "Cancel" not in i:
             if "deposit" not in i:
-                if int(int(T_Money) - int(Point) - int(Coupon)) == int(money):
+                if int(int(T_Money) - int(Point) - int(Coupon) - int(RePoint)) == int(money):
                     datetime_result = datetime.strptime(i['Order_Time'], format)
                     dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
                     datess = datetime_utc2 - dt_timezone
@@ -322,7 +324,7 @@ def find_money(date,money):
         else:
             if not i["Cancel"]:
                 if "deposit" not in i:
-                    if int(int(T_Money) - int(Point)) == int(money):
+                    if int(int(T_Money) - int(Point) - int(Coupon) - int(RePoint)) == int(money):
                         datetime_result = datetime.strptime(i['Order_Time'], format)
                         dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
                         datess = datetime_utc2 - dt_timezone
@@ -334,7 +336,7 @@ def find_money(date,money):
                             return
 
                 elif not i["deposit"] :
-                    if int(int(T_Money) - int(Point)) == int(money):
+                    if int(int(T_Money) - int(Point) - int(Coupon) - int(RePoint)) == int(money):
                         datetime_result = datetime.strptime(i['Order_Time'], format)
                         dt_timezone = datetime_result.replace(tzinfo=timezone_kst)
                         datess = datetime_utc2 - dt_timezone
@@ -494,12 +496,13 @@ if __name__ == "__main__":
 
     # v = mycustomer.find({})
     v = mycol.find({}).sort("_id",-1)
-    b = Coupon_Data.find_one({})
+    # b = Coupon_Data.find_one({})
     
-    print(find_Coupon_Name(b["쿠폰번호"]))
+    
     for i in v:
-        if i["Coupon_Code"] != "not":
-            print(find_Coupon_Name(i["Coupon_Code"]))
+        print(i)
+        # if i["Coupon_Code"] != "not":
+        #     print(find_Coupon_Name(i["Coupon_Code"]))
     # finds = find_7OverUser()
     # insert_Coupon(UserId='Ua80cd1a19a12cb88657950e300a68594',First_Coupon=False,W_Coupon=True,M_Coupon=True,지급일자 = "2023-01-25",쿠폰명 = "첫주문 쿠폰")
     # Order_Time_Check(finds)
