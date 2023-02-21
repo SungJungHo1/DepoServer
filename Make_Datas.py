@@ -298,6 +298,7 @@ def Time_30(point):
                     "type": "text",
                     "text": "ข้อมูลการสั่งถูกยกเลิกเนื่องจากลูกค้า ไม่ได้โอนเงินภายใน30นาที",
                     "weight": "bold",
+                    "wrap": True,
                     "size": "xxl",
                     "color": "#FF3333"
                 }
