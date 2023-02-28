@@ -131,10 +131,12 @@ def Find_All_Order():
                     Edit_30MinCancel(Order_Code)
                     if int(i['use_point']) > 0:
                         Edit_Point(i['UserId'], i['use_point'])
+                        Edit_RePoint(i['UserId'], i['use_Repoint'])
                         ments = Make_Base(i['UserId'], i['use_point'])
                         push_Message2(ments)
                     else:
                         ments = Make_Base(i['UserId'], 0)
+                        Edit_RePoint(i['UserId'], i['use_Repoint'])
                         push_Message2(ments)
                     if "Coupon_Code" in i:
                         if i["Coupon_Code"] != "not":
@@ -153,10 +155,12 @@ def Find_All_Order():
                     Edit_30MinCancel(Order_Code)
                     if int(i['use_point']) > 0:
                         Edit_Point(i['UserId'], i['use_point'])
+                        Edit_RePoint(i['UserId'], i['use_Repoint'])
                         ments = Make_Base(i['UserId'], i['use_point'])
                         push_Message2(ments)
                     else:
                         ments = Make_Base(i['UserId'], 0)
+                        Edit_RePoint(i['UserId'], i['use_Repoint'])
                         push_Message2(ments)
                     if "Coupon_Code" in i:
                         if i["Coupon_Code"] != "not":
@@ -174,10 +178,12 @@ def Find_All_Order():
                     Edit_30MinCancel(Order_Code)
                     if int(i['use_point']) > 0:
                         Edit_Point(i['UserId'], i['use_point'])
+                        Edit_RePoint(i['UserId'], i['use_Repoint'])
                         ments = Make_Base(i['UserId'], i['use_point'])
                         push_Message2(ments)
                     else:
                         ments = Make_Base(i['UserId'], 0)
+                        Edit_RePoint(i['UserId'], i['use_Repoint'])
                         push_Message2(ments)
                     if "Coupon_Code" in i:
                         if i["Coupon_Code"] != "not":
@@ -257,6 +263,10 @@ def Edit_Point(UserId, point):
     mycustomer.update_one({"UserId": str(UserId)}, {
         '$inc': {'Point': int(point)}})
 
+def Edit_RePoint(UserId, Repoint):
+    mycustomer.update_one({"UserId": str(UserId)}, {
+        '$inc': {'Re_Point': int(Repoint)}})
+
 def Edit_30MinCancel(Order_Code):
     mycol.update_one({"Order_Code": str(Order_Code)}, {
         '$set': {'Time_30Min_Cancel': True}})
@@ -285,6 +295,7 @@ def find_Cansel(date,MarketName):
                                     dd = Shop_Link(UserId,Back_Point,Market_Name)
                                     Update_Db(Order_Code, True, False,False)
                                     Edit_Point(UserId, Back_Point)
+                                    Edit_RePoint(i['UserId'], i['use_Repoint'])
                                     Update_deposit(Order_Code, False)
                                     Update_Cancel(Order_Code, True)
                                     push_Message2(dd)
@@ -491,16 +502,22 @@ if __name__ == "__main__":
     # for i in x:
     #     print(i)
     
-
+    # x = Remind_Data.find({})
+    # for i in x:
+    #     print(len(i["1주일 리마인드"]))
     
+    x  = Coupon_Data.find({})
+    for i in x:
+        print(i)
+
 
     # v = mycustomer.find({})
-    v = mycol.find({}).sort("_id",-1)
+    # v = mycol.find({}).sort("_id",-1)
     # b = Coupon_Data.find_one({})
     
     
-    for i in v:
-        print(i)
+    # for i in v:
+    #     print(i)
         # if i["Coupon_Code"] != "not":
         #     print(find_Coupon_Name(i["Coupon_Code"]))
     # finds = find_7OverUser()
