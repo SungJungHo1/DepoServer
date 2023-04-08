@@ -24,61 +24,61 @@ class Item(BaseModel):
     to: str
     message: str
 
-def Send_1Day_Remind(일자,하루):
-    for i in 하루:
-        # print("진입1")
-        time.sleep(5)
-        insert_Coupon(i['UserId'],False,False,True,일자,'💗First Order Coupon💗')
-        push_Message2(First_Order_Coup(i['UserId'],'"ให้คูปองค่าบริการฟรี100%สำหรับลูกค้าสั่งครั้งแรกเรียบรอยแล้ว ถ้าหากลูกค้าใช้บริการFASTFOOD มีเซอร์ไพรส์คูปองให้ด้วยนะคะ กรุณาใช้บริการFASTFOODเยอะๆนะคะ"'))#첫주문 맨트
+# def Send_1Day_Remind(일자,하루):
+#     for i in 하루:
+#         # print("진입1")
+#         time.sleep(5)
+#         insert_Coupon(i['UserId'],False,False,True,일자,'💗First Order Coupon💗')
+#         push_Message2(First_Order_Coup(i['UserId'],'"ให้คูปองค่าบริการฟรี100%สำหรับลูกค้าสั่งครั้งแรกเรียบรอยแล้ว ถ้าหากลูกค้าใช้บริการFASTFOOD มีเซอร์ไพรส์คูปองให้ด้วยนะคะ กรุณาใช้บริการFASTFOODเยอะๆนะคะ"'))#첫주문 맨트
         
 
-def Send_1W_Remind(일자,일주일):
-    for i in 일주일:
-        # print(일자)
-        # print("진입2")
-        push_Message2(First_Order_Coup(i['UserId'],'นาทีทองสำหรับลูกค้าวันนี้วันสุดท้ายของการใช้คูปองค่าบริการฟรี 100% เข้าไปเป็นเพื่อนสนิทกับ FASTFOOD ได้นะคะ'))#일주일 맨트
-        Updata_CD(i['UserId'],False,False,False)
-        time.sleep(5)
+# def Send_1W_Remind(일자,일주일):
+#     for i in 일주일:
+#         # print(일자)
+#         # print("진입2")
+#         push_Message2(First_Order_Coup(i['UserId'],'นาทีทองสำหรับลูกค้าวันนี้วันสุดท้ายของการใช้คูปองค่าบริการฟรี 100% เข้าไปเป็นเพื่อนสนิทกับ FASTFOOD ได้นะคะ'))#일주일 맨트
+#         Updata_CD(i['UserId'],False,False,False)
+#         time.sleep(5)
 
 def Times():
-    timezone_kst = timezone(timedelta(hours=9))
+    # timezone_kst = timezone(timedelta(hours=9))
     
-    days = 0
+    # days = 0
 
-    DaySwich = False
-    th_Swich = False
+    # DaySwich = False
+    # th_Swich = False
     
 
     while True:
-        datetime_utc2 = datetime.now(timezone_kst)
+    #     datetime_utc2 = datetime.now(timezone_kst)
 
-        if days != datetime_utc2.day:    
-            days = datetime_utc2.day
-            DaySwich = False
-            th_Swich = True
-        hours = datetime_utc2.hour
-        minutes = datetime_utc2.minute
+    #     if days != datetime_utc2.day:    
+    #         days = datetime_utc2.day
+    #         DaySwich = False
+    #         th_Swich = True
+    #     hours = datetime_utc2.hour
+    #     minutes = datetime_utc2.minute
 
-        if int(hours) == 3 and int(minutes) >= 10 and not DaySwich:
+    #     if int(hours) == 3 and int(minutes) >= 10 and not DaySwich:
             
-            Check_Days_Coupon()
-            DaySwich = True
-            th_Swich = False
+    #         Check_Days_Coupon()
+    #         DaySwich = True
+    #         th_Swich = False
         
-        if int(hours) >= 15 and int(minutes) >= 10 and not th_Swich:
-            if Find_Days_Remind_Data() != None:
-                th_Swich = True
-                일자,하루,일주일 = Find_Days_Remind_Data()
-                # print("진입")
-                t1 = threading.Thread(target=Send_1Day_Remind, args=(일자,하루))
-                t2 = threading.Thread(target=Send_1W_Remind , args= (일자,일주일))
-                t1.daemon = True
-                t2.daemon = True
-                t1.start()
-                t2.start()
-            else:
-                Check_Days_Coupon()
-                DaySwich = True
+    #     if int(hours) >= 15 and int(minutes) >= 10 and not th_Swich:
+    #         if Find_Days_Remind_Data() != None:
+    #             th_Swich = True
+    #             일자,하루,일주일 = Find_Days_Remind_Data()
+    #             # print("진입")
+    #             t1 = threading.Thread(target=Send_1Day_Remind, args=(일자,하루))
+    #             t2 = threading.Thread(target=Send_1W_Remind , args= (일자,일주일))
+    #             t1.daemon = True
+    #             t2.daemon = True
+    #             t1.start()
+    #             t2.start()
+    #         else:
+    #             Check_Days_Coupon()
+    #             DaySwich = True
 
         Find_All_Order()
 
