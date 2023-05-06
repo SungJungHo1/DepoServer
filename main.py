@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import asyncio
 from Get_yogiyo import *
 from DBMaker import *
 from Make_Datas import First_Order_Coup
@@ -40,16 +41,13 @@ class Item(BaseModel):
 #         Updata_CD(i['UserId'],False,False,False)
 #         time.sleep(5)
 
-def Times():
+async def Times():
     # timezone_kst = timezone(timedelta(hours=9))
     
     # days = 0
 
     # DaySwich = False
     # th_Swich = False
-    
-
-    while True:
     #     datetime_utc2 = datetime.now(timezone_kst)
 
     #     if days != datetime_utc2.day:    
@@ -79,11 +77,18 @@ def Times():
     #         else:
     #             Check_Days_Coupon()
     #             DaySwich = True
-
         Find_All_Order()
 
-        time.sleep(30)
+async def run_periodic_task():
+    while True:
+        await asyncio.sleep(60)  # 1분마다 실행
+        try:
+            await Times()
+        except:
+            print("error")
 
+def Check_m():
+    print("Hi")
 
 @app.post('/wait-time')
 def Waittime(item : Item):
@@ -150,9 +155,15 @@ def Depo(item : Item):
     return item
 
 @app.get('/Thread_Start')
-def find_User_Data2(background_tasks: BackgroundTasks = None):
-    background_tasks.add_task(Times)
-    return "result"
+def find_User_Data2(background_tasks: BackgroundTasks):
+    
+    background_tasks.add_task(Check_m)
+    
+    return "running_tasks"
+    
+@app.on_event("startup")
+async def startup_event():
+    asyncio.create_task(run_periodic_task())
 
 if __name__ == "__main__":
     # text = f"126232321313\n입금100,000원\nsdsdsadasda"
