@@ -293,7 +293,7 @@ def find_Cansel(date,MarketName):
 
                                     for v in i["Cart"]:
                                         totalPrice = totalPrice + int(v['totalPrice'])
-                                    Back_Point = totalPrice + int(i['delivery_fee']) + int(i['Service_Money']) - int(i['Coupon_Pay']) - int(i['use_point'])
+                                    Back_Point = totalPrice + int(i['delivery_fee']) + int(i['Service_Money']) - int(i['Coupon_Pay']) - int(i['use_Repoint'])
                                     dd = Shop_Link(UserId,Back_Point,Market_Name)
                                     Update_Db(Order_Code, True, False,False)
                                     Edit_Point(UserId, Back_Point)
